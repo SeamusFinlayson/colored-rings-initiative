@@ -1,6 +1,6 @@
-import OBR, { Shape, Image } from "@owlbear-rodeo/sdk";
+import OBR, { type Shape, type Image } from "@owlbear-rodeo/sdk";
 import { colors } from "./colors";
-import { getPluginId } from "./getPluginId";
+import { getPluginId } from "../getPluginId";
 import {
   buildStatusRing,
   isPlainObject,
@@ -25,7 +25,7 @@ OBR.onReady(async () => {
             <button class="color-button" id="${color}">
               <div class="color" style="background: ${color}"></div>
             </button>
-            `
+            `,
         )
         .join("")}
     </div>
@@ -66,11 +66,11 @@ async function handleButtonClick(button: HTMLButtonElement) {
     for (const item of items) {
       // Find all rings attached to this item
       const attachedRings = statusRings.filter(
-        (ring) => ring.attachedTo === item.id
+        (ring) => ring.attachedTo === item.id,
       );
       // Find all rings of the selected color attached to this item
       const currentColorRings = attachedRings.filter(
-        (ring) => ring.style.strokeColor === color
+        (ring) => ring.style.strokeColor === color,
       );
       // Delete the ring if it is selected else add a new ring
       if (selected) {
@@ -81,8 +81,8 @@ async function handleButtonClick(button: HTMLButtonElement) {
             item,
             color,
             dpi,
-            item.scale.x * (1 - attachedRings.length * 0.1)
-          )
+            item.scale.x * (1 - attachedRings.length * 0.1),
+          ),
         );
       }
     }

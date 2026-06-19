@@ -1,8 +1,13 @@
-import OBR, { isShape, Item, Image, buildShape } from "@owlbear-rodeo/sdk";
-import { getPluginId } from "./getPluginId";
+import OBR, {
+  isShape,
+  type Item,
+  type Image,
+  buildShape,
+} from "@owlbear-rodeo/sdk";
+import { getPluginId } from "../getPluginId";
 
 export function isPlainObject(
-  item: unknown
+  item: unknown,
 ): item is Record<keyof any, unknown> {
   return (
     item !== null && typeof item === "object" && item.constructor === Object
@@ -41,7 +46,7 @@ export function buildStatusRing(
   item: Image,
   color: string,
   dpi: number,
-  scale: number
+  scale: number,
 ) {
   const dpiScale = dpi / item.grid.dpi;
   const width = item.image.width * dpiScale;
@@ -84,9 +89,9 @@ export function updateStatusRingScales(selectedItems: Item[]) {
       const metadata = item.metadata[getPluginId("metadata")];
       return Boolean(
         isPlainObject(metadata) &&
-          metadata.enabled &&
-          item.attachedTo &&
-          selection.includes(item.attachedTo)
+        metadata.enabled &&
+        item.attachedTo &&
+        selection.includes(item.attachedTo),
       );
     },
     (items) => {
@@ -97,6 +102,6 @@ export function updateStatusRingScales(selectedItems: Item[]) {
           attached[i].scale = { x: scale, y: scale };
         }
       }
-    }
+    },
   );
 }
