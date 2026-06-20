@@ -40,7 +40,7 @@ export function SingleGroupView({
           a.color === group.color ? -5 : a.color.localeCompare(b.color),
         )
         .map((val) => (
-          <GroupCard group={val} />
+          <GroupCard key={val.tokens[0].item.id} group={val} />
         ))}
     </div>
   );

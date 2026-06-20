@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ReactionFilled } from "../icons/ReactionFilled";
 import { ReactionOutline } from "../icons/ReactionOutline";
 import { ReadyFilled } from "../icons/ReadyFilled";
@@ -7,6 +6,7 @@ import type { RingGroup } from "../types/RingGroup";
 import TokenImage from "./TokenImage";
 import { cn } from "../../cn";
 import { IconToggle } from "./IconToggle";
+import { updateInitiaitiveData } from "../helpers/initiativeData";
 
 export function GroupCard({
   group,
@@ -15,12 +15,19 @@ export function GroupCard({
   group: RingGroup;
   onGroupClick: (group: RingGroup) => void;
 }) {
-  const [hasReaction, setHasReaction] = useState(true);
-  const [hasTurn, setHasTurn] = useState(true);
+  const reactionsRemaining = group.tokens.reduce(
+    (accum, token) => accum + (token.data.hasReaction ? 1 : 0),
+    0,
+  );
+  const turnsRemaining = group.tokens.reduce(
+    (accum, token) => accum + token.data.turnsRemaining,
+    0,
+  );
+
+  const hasReaction = reactionsRemaining > 0;
+  const hasTurn = turnsRemaining > 0;
 
   const groupSize = group.tokens.length;
-  const reactionsRemaining = groupSize * (hasReaction ? 1 : 0);
-  const turnsRemaining = groupSize * (hasTurn ? 1 : 0);
 
   const reactionText =
     groupSize > 1 ? `${reactionsRemaining}/${groupSize}` : undefined;
@@ -84,7 +91,14 @@ export function GroupCard({
 
       <IconToggle
         checked={hasReaction}
-        onClick={() => setHasReaction(!hasReaction)}
+        onClick={() =>
+          updateInitiaitiveData(
+            group.tokens.map((token) => ({
+              itemId: token.item.id,
+              data: { ...token.data, hasReaction: !hasReaction },
+            })),
+          )
+        }
         text={reactionText}
         checkedIcon={<ReactionFilled />}
         unCheckedIcon={<ReactionOutline />}
@@ -92,7 +106,17 @@ export function GroupCard({
       />
       <IconToggle
         checked={hasTurn}
-        onClick={() => setHasTurn(!hasTurn)}
+        onClick={() =>
+          updateInitiaitiveData(
+            group.tokens.map((token) => ({
+              itemId: token.item.id,
+              data: {
+                ...token.data,
+                turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
+              },
+            })),
+          )
+        }
         text={turnText}
         checkedIcon={<ReadyFilled />}
         unCheckedIcon={<ReadyOutline />}

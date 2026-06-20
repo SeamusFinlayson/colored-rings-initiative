@@ -7,6 +7,8 @@ import type { RingGroup } from "./types/RingGroup";
 import { useState } from "react";
 import { SingleGroupView } from "./components/SingleGroupView";
 import { MainView } from "./components/MainView";
+import type { Token } from "./types/Token";
+import { getInitiativeData } from "./helpers/initiativeData";
 
 type Selection = { color: string; division: string };
 
@@ -31,11 +33,12 @@ export function ActionMenu() {
       );
     });
 
-  const tokensWithRings = tokens
+  const tokensWithRings: Token[] = tokens
     .filter((item) => rings.some((ring) => ring.attachedTo === item.id))
     .map((item) => {
       return {
         item,
+        data: getInitiativeData(item),
         rings: rings
           .filter((ring) => ring.attachedTo === item.id)
           .sort((a, b) => b.scale.x - a.scale.x),
