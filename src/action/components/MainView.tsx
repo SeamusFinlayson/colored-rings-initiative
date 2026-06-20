@@ -1,15 +1,16 @@
 import { updateInitiaitiveData } from "../helpers/initiativeData";
+import type { GroupSelector } from "../types/GroupSelector";
 import type { RingGroup } from "../types/RingGroup";
 import { GroupCard } from "./GroupCard";
 
 export function MainView({
   catagories,
   ringGroups,
-  onGroupClick,
+  onSelect,
 }: {
   catagories: string[];
   ringGroups: RingGroup[];
-  onGroupClick: (group: RingGroup) => void;
+  onSelect: (selector: GroupSelector) => void;
 }) {
   return (
     <div>
@@ -43,8 +44,12 @@ export function MainView({
               .map((group) => (
                 <GroupCard
                   key={group.color + group.catagory}
-                  group={group}
-                  onGroupClick={onGroupClick}
+                  color={group.color}
+                  name={group.name}
+                  tokens={group.tokens}
+                  onGroupClick={() =>
+                    onSelect({ color: group.color, catagory: group.catagory })
+                  }
                 />
               ))}
           </div>

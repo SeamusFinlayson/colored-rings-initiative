@@ -9,13 +9,12 @@ import { MainView } from "./components/MainView";
 import type { Token } from "./types/Token";
 import { getInitiativeData } from "./helpers/initiativeData";
 import { colors } from "../contextMenu/colors";
-
-type Selection = { color: string; catagory: string };
+import type { GroupSelector } from "./types/GroupSelector";
 
 export function ActionMenu() {
   const items = useItems();
 
-  const [groupSelector, setGroupSelector] = useState<Selection>();
+  const [groupSelector, setGroupSelector] = useState<GroupSelector>();
 
   const rings = items
     .filter((item) => isShape(item))
@@ -43,8 +42,6 @@ export function ActionMenu() {
       };
     });
 
-  let nameIndex = 1;
-
   const catagories = [
     ...new Set([
       "Party",
@@ -53,11 +50,16 @@ export function ActionMenu() {
     ]),
   ];
 
+  let nameIndex = 1;
   const ringGroups: RingGroup[] = catagories
     .flatMap((catagory) =>
       colors.map((color) => {
-        let name = tokens[0]?.item.name;
-        for (const token of tokens) {
+        const groupTokens = tokens
+          .filter((token) => token.data.catagory === catagory)
+          .filter((token) => token.rings[0].style.strokeColor === color);
+
+        let name = groupTokens[0]?.item.name;
+        for (const token of groupTokens) {
           if (token.item.name !== name) {
             name = `Group ${nameIndex++}`;
             break;
@@ -67,9 +69,7 @@ export function ActionMenu() {
           name,
           color,
           catagory,
-          tokens: tokens
-            .filter((token) => token.data.catagory === catagory)
-            .filter((token) => token.rings[0].style.strokeColor === color),
+          tokens: groupTokens,
         };
       }),
     )
@@ -92,12 +92,7 @@ export function ActionMenu() {
           <MainView
             catagories={catagories}
             ringGroups={ringGroups}
-            onGroupClick={(group) =>
-              setGroupSelector({
-                color: group.color,
-                catagory: group.tokens[0].data.catagory,
-              })
-            }
+            onSelect={(selector) => setGroupSelector(selector)}
           />
         )}
       </div>
