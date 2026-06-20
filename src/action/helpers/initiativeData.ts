@@ -11,7 +11,7 @@ const defaultInitiativeData: InitiativeData = {
   hasReaction: true,
   turnsRemaining: 1,
   totalTurns: 1,
-  catagory: "Adversary",
+  catagory: "Adversaries",
 };
 
 export const INITIATIVE_METADATA_KEY = getPluginId("initiative");

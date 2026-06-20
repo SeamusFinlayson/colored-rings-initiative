@@ -3,9 +3,11 @@ import type { RingGroup } from "../types/RingGroup";
 import { GroupCard } from "./GroupCard";
 
 export function MainView({
+  catagories,
   ringGroups,
   onGroupClick,
 }: {
+  catagories: string[];
   ringGroups: RingGroup[];
   onGroupClick: (group: RingGroup) => void;
 }) {
@@ -32,13 +34,20 @@ export function MainView({
           reset
         </button>
       </div>
-      <div className="flex flex-col">
-        {ringGroups.map((group) => (
-          <GroupCard
-            key={group.color}
-            group={group}
-            onGroupClick={onGroupClick}
-          />
+      <div className="space-y-1">
+        {catagories.map((catagory) => (
+          <div key={catagory} className="flex flex-col">
+            <div className="ml-1.5">{catagory}</div>
+            {ringGroups
+              .filter((group) => group.catagory === catagory)
+              .map((group) => (
+                <GroupCard
+                  key={group.color + group.catagory}
+                  group={group}
+                  onGroupClick={onGroupClick}
+                />
+              ))}
+          </div>
         ))}
       </div>
     </div>

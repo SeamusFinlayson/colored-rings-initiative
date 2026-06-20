@@ -5,6 +5,7 @@ export const PatrialInitiativeDataZod = z.object({
   hasReaction: z.boolean().optional(),
   turnsRemaining: z.number().optional(),
   totalTurns: z.number().optional(),
+  catagory: z.string().optional(),
 });
 
 export const InitiativeDataZod = z.object({
@@ -12,6 +13,7 @@ export const InitiativeDataZod = z.object({
   hasReaction: z.boolean(),
   turnsRemaining: z.number(),
   totalTurns: z.number(),
+  catagory: z.string(),
 });
 
 export type PatrialInitiativeData = z.infer<typeof PatrialInitiativeDataZod>;

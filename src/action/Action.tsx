@@ -2,24 +2,20 @@ import { isImage, isShape } from "@owlbear-rodeo/sdk";
 import { useItems } from "../useItems";
 import { isPlainObject } from "../contextMenu/helpers";
 import { getPluginId } from "../getPluginId";
-import { colors } from "../contextMenu/colors";
 import type { RingGroup } from "./types/RingGroup";
 import { useState } from "react";
 import { SingleGroupView } from "./components/SingleGroupView";
 import { MainView } from "./components/MainView";
 import type { Token } from "./types/Token";
 import { getInitiativeData } from "./helpers/initiativeData";
+import { colors } from "../contextMenu/colors";
 
-type Selection = { color: string; division: string };
+type Selection = { color: string; catagory: string };
 
 export function ActionMenu() {
   const items = useItems();
 
   const [groupSelector, setGroupSelector] = useState<Selection>();
-
-  const tokens = items
-    .filter((item) => isImage(item))
-    .filter((item) => item.layer === "CHARACTER");
 
   const rings = items
     .filter((item) => isShape(item))
@@ -33,7 +29,9 @@ export function ActionMenu() {
       );
     });
 
-  const tokensWithRings: Token[] = tokens
+  const tokens: Token[] = items
+    .filter((item) => isImage(item))
+    .filter((item) => item.layer === "CHARACTER")
     .filter((item) => rings.some((ring) => ring.attachedTo === item.id))
     .map((item) => {
       return {
@@ -47,24 +45,34 @@ export function ActionMenu() {
 
   let nameIndex = 1;
 
-  const ringGroups: RingGroup[] = colors
-    .map((color) => {
-      const tokens = tokensWithRings.filter(
-        (tokenWithRings) => tokenWithRings.rings[0].style.strokeColor === color,
-      );
-      let name = tokens[0]?.item.name;
-      for (const token of tokens) {
-        if (token.item.name !== name) {
-          name = `Group ${nameIndex++}`;
-          break;
+  const catagories = [
+    ...new Set([
+      "Party",
+      "Adversaries",
+      ...tokens.map((token) => token.data.catagory),
+    ]),
+  ];
+
+  const ringGroups: RingGroup[] = catagories
+    .flatMap((catagory) =>
+      colors.map((color) => {
+        let name = tokens[0]?.item.name;
+        for (const token of tokens) {
+          if (token.item.name !== name) {
+            name = `Group ${nameIndex++}`;
+            break;
+          }
         }
-      }
-      return {
-        name,
-        color,
-        tokens,
-      };
-    })
+        return {
+          name,
+          color,
+          catagory,
+          tokens: tokens
+            .filter((token) => token.data.catagory === catagory)
+            .filter((token) => token.rings[0].style.strokeColor === color),
+        };
+      }),
+    )
     .filter((group) => group.tokens.length > 0)
     .sort((a, b) => a.tokens[0].item.name.localeCompare(b.tokens[0].item.name));
 
@@ -82,11 +90,12 @@ export function ActionMenu() {
           />
         ) : (
           <MainView
+            catagories={catagories}
             ringGroups={ringGroups}
             onGroupClick={(group) =>
               setGroupSelector({
                 color: group.color,
-                division: "",
+                catagory: group.tokens[0].data.catagory,
               })
             }
           />
