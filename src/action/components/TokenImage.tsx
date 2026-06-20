@@ -1,4 +1,4 @@
-import { cn } from "../cn";
+import { cn } from "../../cn";
 
 export default function TokenImage({
   src,
@@ -9,8 +9,8 @@ export default function TokenImage({
 }) {
   return (
     <img
-      className={cn("tokenIcon max-h-11 max-w-[30px] object-scale-down", {
-        "outline-image dark:outline-image": outline,
+      className={cn("tokenIcon max-h-11 max-w-10 object-scale-down", {
+        "animate-bounce": outline,
       })}
       src={src}
     />
