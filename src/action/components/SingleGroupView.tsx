@@ -3,14 +3,16 @@ import type { RingGroup } from "../types/RingGroup";
 import { GroupCard } from "./GroupCard";
 import {
   ArrowLeftIcon,
+  ArrowUpDownIcon,
   FocusIcon,
-  SearchIcon,
-  SquareDashedMousePointerIcon,
-  TagIcon,
+  ListXIcon,
   XIcon,
 } from "lucide-react";
 import OBR from "@owlbear-rodeo/sdk";
 import { focusItems } from "../helpers/focusItems";
+import { removeFromInitiative } from "../helpers/removeFromInitiative";
+import { switchToCatagory } from "../helpers/switchToCatagory";
+import HeightMatch from "../helpers/HeightMatch";
 
 export function SingleGroupView({
   group,
@@ -21,11 +23,13 @@ export function SingleGroupView({
 }) {
   const [selection, setSelection] = useState<string[]>([]);
 
+  const nextCatagory = group.catagory === "Party" ? "Adversaries" : "Party";
+
   return (
-    <div>
+    <div className="flex h-screen flex-col">
       <div
         style={{
-          backgroundColor: group.color + "40",
+          backgroundColor: group.color + (selection.length > 0 ? "80" : "40"),
         }}
       >
         {selection.length === 0 ? (
@@ -37,7 +41,8 @@ export function SingleGroupView({
               <ArrowLeftIcon />
             </button>
             <button
-              className="block h-12 w-12 grow basis-0 truncate px-2 text-sm hover:bg-white/10"
+              title="Select All"
+              className="h-12 w-12 grow basis-0 truncate px-2 text-start text-sm hover:bg-white/10"
               onClick={() =>
                 setSelection(group.tokens.map((token) => token.item.id))
               }
@@ -56,17 +61,9 @@ export function SingleGroupView({
                 {selection.length}
               </div>
             </button>
-            <div className="grow"></div>
+            <div className="my-3 border-l border-white"></div>
             <button
-              className="grid h-12 grow place-items-center hover:bg-white/20"
-              onClick={() => {
-                OBR.player.select(selection);
-                setSelection([]);
-              }}
-            >
-              <SquareDashedMousePointerIcon />
-            </button>
-            <button
+              title="Focus"
               className="grid h-12 grow place-items-center hover:bg-white/20"
               onClick={() => {
                 OBR.player.select(selection);
@@ -77,60 +74,63 @@ export function SingleGroupView({
               <FocusIcon />
             </button>
             <button
+              title={`Move to ${nextCatagory}`}
               className="grid h-12 grow place-items-center hover:bg-white/20"
               onClick={() => {
+                switchToCatagory(nextCatagory, selection);
                 OBR.player.select(selection);
-                focusItems(selection);
+                onBackClick();
+              }}
+            >
+              <ArrowUpDownIcon />
+            </button>
+            <button
+              title="Remove"
+              className="grid h-12 grow place-items-center hover:bg-white/20"
+              onClick={() => {
+                removeFromInitiative(
+                  group.tokens.filter((token) =>
+                    selection.includes(token.item.id),
+                  ),
+                );
                 setSelection([]);
               }}
             >
-              <TagIcon />
+              <ListXIcon />
             </button>
           </div>
         )}
       </div>
-      {group.tokens
-        .map((token) => {
-          const ring = token.rings.at(1);
-          const color = ring
-            ? ring.style.strokeColor
-            : token.rings[0].style.strokeColor;
-          return {
-            name: token.item.name,
-            catagory: group.catagory,
-            color,
-            tokens: [token],
-          };
-        })
-        .sort(
-          (a, b) =>
-            parseInt("0x" + b.color.substring(1)) -
-            parseInt("0x" + a.color.substring(1)),
-        )
-        .sort((a) => (a.color === group.color ? -1 : 0))
+      <div className="grow overflow-y-auto">
+        <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
+          {group.tokens.map((token) => {
+            const ring = token.rings.at(1);
+            const color = ring
+              ? ring.style.strokeColor
+              : token.rings[0].style.strokeColor;
+            const id = token.item.id;
 
-        .map((val) => {
-          const id = val.tokens[0].item.id;
-
-          return (
-            <GroupCard
-              key={val.tokens[0].item.id}
-              color={val.color}
-              name={val.name}
-              tokens={val.tokens}
-              onGroupClick={() =>
-                setSelection(
-                  selection.includes(id)
-                    ? selection.filter((val) => val !== id)
-                    : [...selection, id],
-                )
-              }
-              showReaction={selection.length === 0}
-              showTurn={selection.length === 0}
-              highlight={selection.includes(id)}
-            />
-          );
-        })}
+            return (
+              <GroupCard
+                key={token.item.id}
+                color={color}
+                name={token.item.name}
+                tokens={[token]}
+                onGroupClick={() =>
+                  setSelection(
+                    selection.includes(id)
+                      ? selection.filter((val) => val !== id)
+                      : [...selection, id],
+                  )
+                }
+                showReaction={selection.length === 0}
+                showTurn={selection.length === 0}
+                highlight={selection.includes(id)}
+              />
+            );
+          })}
+        </HeightMatch>
+      </div>
     </div>
   );
 }

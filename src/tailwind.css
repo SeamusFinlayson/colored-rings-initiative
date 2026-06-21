@@ -6,18 +6,17 @@ button {
   cursor: pointer;
 }
 
-.outline-image {
-  -webkit-filter: drop-shadow(1px 1px 0 #9966ff) drop-shadow(-1px 1px 0 #9966ff)
-    drop-shadow(1px -1px 0 #9966ff) drop-shadow(-1px -1px 0 #9966ff);
-
-  filter: drop-shadow(1px 1px 0 #9966ff) drop-shadow(-1px 1px 0 #9966ff)
-    drop-shadow(1px -1px 0 #9966ff) drop-shadow(-1px -1px 0 #9966ff);
-}
-
-.dark\:outline-image:is(.dark *) {
-  -webkit-filter: drop-shadow(1px 1px 0 #bb99ff) drop-shadow(-1px 1px 0 #bb99ff)
-    drop-shadow(1px -1px 0 #bb99ff) drop-shadow(-1px -1px 0 #bb99ff);
-
-  filter: drop-shadow(1px 1px 0 #bb99ff) drop-shadow(-1px 1px 0 #bb99ff)
-    drop-shadow(1px -1px 0 #bb99ff) drop-shadow(-1px -1px 0 #bb99ff);
+@theme {
+  --animate-jump: jump 1s ease-in-out infinite;
+  @keyframes jump {
+    0%,
+    100% {
+      transform: none;
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    50% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+  }
 }

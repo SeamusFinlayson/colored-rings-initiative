@@ -7,6 +7,7 @@ import { cn } from "../../cn";
 import { IconToggle } from "./IconToggle";
 import { updateInitiaitiveData } from "../helpers/initiativeData";
 import type { Token } from "../types/Token";
+import { usePlayerSelection } from "../helpers/usePlayerSelection";
 
 export function GroupCard({
   tokens,
@@ -25,12 +26,18 @@ export function GroupCard({
   showTurn?: boolean;
   highlight?: boolean;
 }) {
+  const playerSelection = usePlayerSelection();
+
   const reactionsRemaining = tokens.reduce(
     (accum, token) => accum + (token.data.hasReaction ? 1 : 0),
     0,
   );
   const turnsRemaining = tokens.reduce(
     (accum, token) => accum + token.data.turnsRemaining,
+    0,
+  );
+  const totalTurns = tokens.reduce(
+    (accum, token) => accum + token.data.totalTurns,
     0,
   );
 
@@ -41,7 +48,8 @@ export function GroupCard({
 
   const reactionText =
     groupSize > 1 ? `${reactionsRemaining}/${groupSize}` : undefined;
-  const turnText = groupSize > 1 ? `${turnsRemaining}/${groupSize}` : undefined;
+  const turnText =
+    totalTurns > 1 ? `${turnsRemaining}/${totalTurns}` : undefined;
 
   const backgroundColor = color ? color + (hasTurn ? "40" : "20") : null;
   const barColor = color ? color + (hasTurn ? "" : "70") : null;
@@ -76,7 +84,11 @@ export function GroupCard({
                   "mr-[-25.5px]": tokens.length > 7,
                 })}
               >
-                <TokenImage key={token.item.id} src={token.item.image.url} />
+                <TokenImage
+                  key={token.item.id}
+                  src={token.item.image.url}
+                  outline={playerSelection.includes(token.item.id)}
+                />
               </div>
             ))}
         </div>
@@ -101,14 +113,17 @@ export function GroupCard({
       {showReaction && (
         <IconToggle
           checked={hasReaction}
-          onClick={() =>
+          onClick={() => {
+            const token = tokens.find((token) => token.data.hasReaction);
             updateInitiaitiveData(
-              tokens.map((token) => ({
-                itemId: token.item.id,
-                data: { ...token.data, hasReaction: !hasReaction },
-              })),
-            )
-          }
+              token
+                ? [{ itemId: token.item.id, data: { hasReaction: false } }]
+                : tokens.map((token) => ({
+                    itemId: token.item.id,
+                    data: { hasReaction: !hasReaction },
+                  })),
+            );
+          }}
           text={reactionText}
           checkedIcon={<ReactionFilled />}
           unCheckedIcon={<ReactionOutline />}
@@ -118,17 +133,24 @@ export function GroupCard({
       {showTurn && (
         <IconToggle
           checked={hasTurn}
-          onClick={() =>
+          onClick={() => {
+            const token = tokens.find((token) => token.data.turnsRemaining > 0);
             updateInitiaitiveData(
-              tokens.map((token) => ({
-                itemId: token.item.id,
-                data: {
-                  ...token.data,
-                  turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
-                },
-              })),
-            )
-          }
+              token
+                ? [
+                    {
+                      itemId: token.item.id,
+                      data: { turnsRemaining: token.data.turnsRemaining - 1 },
+                    },
+                  ]
+                : tokens.map((token) => ({
+                    itemId: token.item.id,
+                    data: {
+                      turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
+                    },
+                  })),
+            );
+          }}
           text={turnText}
           checkedIcon={<ReadyFilled />}
           unCheckedIcon={<ReadyOutline />}

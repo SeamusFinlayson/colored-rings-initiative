@@ -10,7 +10,7 @@ export default function TokenImage({
   return (
     <img
       className={cn("tokenIcon max-h-11 max-w-10 object-scale-down", {
-        "animate-bounce": outline,
+        "animate-jump": outline,
       })}
       src={src}
     />

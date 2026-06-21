@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const PatrialInitiativeDataZod = z.object({
+export const PartialInitiativeDataZod = z.object({
   type: z.union([z.literal("ALWAYS"), z.literal("RING")]).optional(),
   hasReaction: z.boolean().optional(),
   turnsRemaining: z.number().optional(),
@@ -16,5 +16,5 @@ export const InitiativeDataZod = z.object({
   catagory: z.string(),
 });
 
-export type PatrialInitiativeData = z.infer<typeof PatrialInitiativeDataZod>;
+export type PartialInitiativeData = z.infer<typeof PartialInitiativeDataZod>;
 export type InitiativeData = z.infer<typeof InitiativeDataZod>;

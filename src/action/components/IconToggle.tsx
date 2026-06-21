@@ -19,9 +19,15 @@ export function IconToggle({
     <button
       className={cn(
         "grid w-12 shrink-0 place-items-center transition-colors",
-        { "hover:bg-pink-300/10": color === "PINK" },
-        { "hover:bg-yellow-300/10": color === "YELLOW" },
-        { "hover:bg-purple-300/10": color === "DEFAULT" },
+        { "hover:bg-pink-400/10 dark:hover:bg-pink-300/10": color === "PINK" },
+        {
+          "hover:bg-yellow-400/10 dark:hover:bg-yellow-300/10":
+            color === "YELLOW",
+        },
+        {
+          "hover:bg-purple-400/10 dark:hover:bg-purple-300/10":
+            color === "DEFAULT",
+        },
       )}
       onClick={onClick}
     >
@@ -30,9 +36,9 @@ export function IconToggle({
           data-hide={!checked}
           className={cn(
             "col-start-1 row-start-1 size-6 transition-opacity data-[hide=true]:opacity-0",
-            { "text-pink-200 dark:text-pink-400": color === "PINK" },
-            { "text-yellow-200 dark:text-yellow-300": color === "YELLOW" },
-            { "text-purple-200 dark:text-purple-400": color === "DEFAULT" },
+            { "text-pink-800 dark:text-pink-400": color === "PINK" },
+            { "text-yellow-800 dark:text-yellow-300": color === "YELLOW" },
+            { "text-purple-600 dark:text-purple-400": color === "DEFAULT" },
           )}
         >
           {checkedIcon}

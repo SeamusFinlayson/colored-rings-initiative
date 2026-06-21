@@ -1,3 +1,5 @@
+import OBR from "@owlbear-rodeo/sdk";
+import HeightMatch from "../helpers/HeightMatch";
 import { updateInitiaitiveData } from "../helpers/initiativeData";
 import type { GroupSelector } from "../types/GroupSelector";
 import type { RingGroup } from "../types/RingGroup";
@@ -13,7 +15,7 @@ export function MainView({
   onSelect: (selector: GroupSelector) => void;
 }) {
   return (
-    <div>
+    <div className="flex h-screen flex-col">
       <div className="flex justify-between px-4 py-3 font-bold">
         <div>Initiative</div>
         <button
@@ -24,7 +26,6 @@ export function MainView({
               tokens.map((token) => ({
                 itemId: token.item.id,
                 data: {
-                  ...token.data,
                   hasReaction: true,
                   turnsRemaining: token.data.totalTurns,
                 },
@@ -35,25 +36,35 @@ export function MainView({
           reset
         </button>
       </div>
-      <div className="space-y-1">
-        {catagories.map((catagory) => (
-          <div key={catagory} className="flex flex-col">
-            <div className="ml-1.5">{catagory}</div>
-            {ringGroups
-              .filter((group) => group.catagory === catagory)
-              .map((group) => (
-                <GroupCard
-                  key={group.color + group.catagory}
-                  color={group.color}
-                  name={group.name}
-                  tokens={group.tokens}
-                  onGroupClick={() =>
-                    onSelect({ color: group.color, catagory: group.catagory })
-                  }
-                />
-              ))}
+      <div className="mx-4 border-b border-white/12" />
+      <div className="grow overflow-y-auto">
+        <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
+          <div>
+            {catagories.map((catagory) => (
+              <div key={catagory} className="flex flex-col">
+                <div className="mt-2 mb-2 ml-1.5 text-sm text-white/70 uppercase">
+                  {catagory}
+                </div>
+                {ringGroups
+                  .filter((group) => group.catagory === catagory)
+                  .map((group) => (
+                    <GroupCard
+                      key={group.color + group.catagory}
+                      color={group.color}
+                      name={group.name}
+                      tokens={group.tokens}
+                      onGroupClick={() =>
+                        onSelect({
+                          color: group.color,
+                          catagory: group.catagory,
+                        })
+                      }
+                    />
+                  ))}
+              </div>
+            ))}
           </div>
-        ))}
+        </HeightMatch>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { isImage, isShape } from "@owlbear-rodeo/sdk";
-import { useItems } from "../useItems";
+import { useItems } from "./helpers/useItems";
 import { isPlainObject } from "../contextMenu/helpers";
 import { getPluginId } from "../getPluginId";
 import type { RingGroup } from "./types/RingGroup";
@@ -56,7 +56,18 @@ export function ActionMenu() {
       colors.map((color) => {
         const groupTokens = tokens
           .filter((token) => token.data.catagory === catagory)
-          .filter((token) => token.rings[0].style.strokeColor === color);
+          .filter((token) => token.rings[0].style.strokeColor === color)
+          .map((token) => {
+            const ring = token.rings.at(1);
+            const color = ring
+              ? ring.style.strokeColor
+              : token.rings[0].style.strokeColor;
+            const colorNumber = parseInt("0x" + color.substring(1));
+            return { color, colorNumber, token };
+          })
+          .sort((a, b) => a.colorNumber - b.colorNumber)
+          .sort((a) => (a.color === color ? -1 : 0))
+          .map((val) => val.token);
 
         let name = groupTokens[0]?.item.name;
         for (const token of groupTokens) {
@@ -77,25 +88,27 @@ export function ActionMenu() {
     .sort((a, b) => a.tokens[0].item.name.localeCompare(b.tokens[0].item.name));
 
   const selectedGroup = groupSelector
-    ? ringGroups.find((group) => group.color === groupSelector.color)
+    ? ringGroups.find(
+        (group) =>
+          group.color === groupSelector.color &&
+          group.catagory === groupSelector.catagory,
+      )
     : undefined;
 
   return (
-    <div className="dark">
-      <div className="h-screen bg-black/10 text-black dark:bg-transparent dark:text-white">
-        {selectedGroup ? (
-          <SingleGroupView
-            group={selectedGroup}
-            onBackClick={() => setGroupSelector(undefined)}
-          />
-        ) : (
-          <MainView
-            catagories={catagories}
-            ringGroups={ringGroups}
-            onSelect={(selector) => setGroupSelector(selector)}
-          />
-        )}
-      </div>
+    <div className="text-black dark:bg-transparent dark:text-white">
+      {selectedGroup ? (
+        <SingleGroupView
+          group={selectedGroup}
+          onBackClick={() => setGroupSelector(undefined)}
+        />
+      ) : (
+        <MainView
+          catagories={catagories}
+          ringGroups={ringGroups}
+          onSelect={(selector) => setGroupSelector(selector)}
+        />
+      )}
     </div>
   );
 }
