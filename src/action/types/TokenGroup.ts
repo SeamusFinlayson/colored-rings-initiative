@@ -1,6 +1,6 @@
 import type { Token } from "./Token";
 
-export type RingGroup = {
+export type TokenGroup = {
   name: string;
   color: string | null;
   catagory: string;

@@ -36,8 +36,8 @@ export function IconToggle({
           data-hide={!checked}
           className={cn(
             "col-start-1 row-start-1 size-6 transition-opacity data-[hide=true]:opacity-0",
-            { "text-pink-800 dark:text-pink-400": color === "PINK" },
-            { "text-yellow-800 dark:text-yellow-300": color === "YELLOW" },
+            { "text-pink-800 dark:text-pink-200": color === "PINK" },
+            { "text-yellow-800 dark:text-yellow-100": color === "YELLOW" },
             { "text-purple-600 dark:text-purple-400": color === "DEFAULT" },
           )}
         >

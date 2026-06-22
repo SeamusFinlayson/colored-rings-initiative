@@ -2,26 +2,27 @@ import OBR from "@owlbear-rodeo/sdk";
 import HeightMatch from "../helpers/HeightMatch";
 import { updateInitiaitiveData } from "../helpers/initiativeData";
 import type { GroupSelector } from "../types/GroupSelector";
-import type { RingGroup } from "../types/RingGroup";
+import type { TokenGroup } from "../types/TokenGroup";
 import { GroupCard } from "./GroupCard";
+import { RefreshCcwIcon } from "lucide-react";
 
 export function MainView({
   catagories,
-  ringGroups,
+  tokenGroups,
   onSelect,
 }: {
   catagories: string[];
-  ringGroups: RingGroup[];
-  onSelect: (selector: GroupSelector) => void;
+  tokenGroups: TokenGroup[];
+  onSelect: (selector: GroupSelector | undefined) => void;
 }) {
   return (
     <div className="flex h-screen flex-col">
-      <div className="flex justify-between px-4 py-3 font-bold">
-        <div>Initiative</div>
+      <div className="flex h-12 items-center justify-between font-bold">
+        <div className="ml-2.5">Initiative</div>
         <button
-          className="hover:bg-white/10"
+          className="flex size-12 items-center justify-center hover:bg-white/20"
           onClick={() => {
-            const tokens = ringGroups.flatMap((group) => group.tokens);
+            const tokens = tokenGroups.flatMap((group) => group.tokens);
             updateInitiaitiveData(
               tokens.map((token) => ({
                 itemId: token.item.id,
@@ -33,19 +34,19 @@ export function MainView({
             );
           }}
         >
-          reset
+          <RefreshCcwIcon />
         </button>
       </div>
-      <div className="mx-4 border-b border-white/12" />
+      <div className="mx-2.5 border-b border-white/12" />
       <div className="grow overflow-y-auto">
         <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
           <div>
             {catagories.map((catagory) => (
               <div key={catagory} className="flex flex-col">
-                <div className="mt-2 mb-2 ml-1.5 text-sm text-white/70 uppercase">
+                <div className="mt-2 mb-2 ml-2.5 text-sm text-black/60 uppercase dark:text-white/70">
                   {catagory}
                 </div>
-                {ringGroups
+                {tokenGroups
                   .filter((group) => group.catagory === catagory)
                   .map((group) => (
                     <GroupCard
@@ -57,6 +58,7 @@ export function MainView({
                         onSelect({
                           color: group.color,
                           catagory: group.catagory,
+                          name: group.name,
                         })
                       }
                     />

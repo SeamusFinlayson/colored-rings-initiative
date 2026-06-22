@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { RingGroup } from "../types/RingGroup";
+import type { TokenGroup } from "../types/TokenGroup";
 import { GroupCard } from "./GroupCard";
 import {
   ArrowLeftIcon,
@@ -15,21 +15,23 @@ import { switchToCatagory } from "../helpers/switchToCatagory";
 import HeightMatch from "../helpers/HeightMatch";
 
 export function SingleGroupView({
-  group,
+  tokenGroup,
   onBackClick,
 }: {
-  group: RingGroup;
+  tokenGroup: TokenGroup;
   onBackClick: () => void;
 }) {
   const [selection, setSelection] = useState<string[]>([]);
 
-  const nextCatagory = group.catagory === "Party" ? "Adversaries" : "Party";
+  const nextCatagory =
+    tokenGroup.catagory === "Party" ? "Adversaries" : "Party";
 
   return (
     <div className="flex h-screen flex-col">
       <div
         style={{
-          backgroundColor: group.color + (selection.length > 0 ? "80" : "40"),
+          backgroundColor:
+            tokenGroup.color + (selection.length > 0 ? "80" : "40"),
         }}
       >
         {selection.length === 0 ? (
@@ -44,10 +46,10 @@ export function SingleGroupView({
               title="Select All"
               className="h-12 w-12 grow basis-0 truncate px-2 text-start text-sm hover:bg-white/10"
               onClick={() =>
-                setSelection(group.tokens.map((token) => token.item.id))
+                setSelection(tokenGroup.tokens.map((token) => token.item.id))
               }
             >
-              {group.name}
+              {tokenGroup.name}
             </button>
           </div>
         ) : (
@@ -89,7 +91,7 @@ export function SingleGroupView({
               className="grid h-12 grow place-items-center hover:bg-white/20"
               onClick={() => {
                 removeFromInitiative(
-                  group.tokens.filter((token) =>
+                  tokenGroup.tokens.filter((token) =>
                     selection.includes(token.item.id),
                   ),
                 );
@@ -103,11 +105,14 @@ export function SingleGroupView({
       </div>
       <div className="grow overflow-y-auto">
         <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
-          {group.tokens.map((token) => {
-            const ring = token.rings.at(1);
-            const color = ring
-              ? ring.style.strokeColor
-              : token.rings[0].style.strokeColor;
+          {tokenGroup.tokens.map((token) => {
+            const ring0 = token.rings.at(0);
+            const ring1 = token.rings.at(1);
+            const color = ring1
+              ? ring1.style.strokeColor
+              : ring0
+                ? ring0.style.strokeColor
+                : null;
             const id = token.item.id;
 
             return (

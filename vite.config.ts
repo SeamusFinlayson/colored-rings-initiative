@@ -24,5 +24,6 @@ export default defineConfig({
         action: resolve(__dirname, "action.html"),
       },
     },
+    chunkSizeWarningLimit: 1000,
   },
 });
