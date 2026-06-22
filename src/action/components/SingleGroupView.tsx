@@ -13,6 +13,7 @@ import { focusItems } from "../helpers/focusItems";
 import { removeFromInitiative } from "../helpers/removeFromInitiative";
 import { switchToCatagory } from "../helpers/switchToCatagory";
 import HeightMatch from "../helpers/HeightMatch";
+import { ScrollArea } from "./ui/ScrollArea";
 
 export function SingleGroupView({
   tokenGroup,
@@ -103,7 +104,7 @@ export function SingleGroupView({
           </div>
         )}
       </div>
-      <div className="grow overflow-y-auto">
+      <ScrollArea className="h-32 grow">
         <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
           {tokenGroup.tokens.map((token) => {
             const ring0 = token.rings.at(0);
@@ -135,7 +136,7 @@ export function SingleGroupView({
             );
           })}
         </HeightMatch>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

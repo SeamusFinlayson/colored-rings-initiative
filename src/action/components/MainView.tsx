@@ -5,6 +5,7 @@ import type { GroupSelector } from "../types/GroupSelector";
 import type { TokenGroup } from "../types/TokenGroup";
 import { GroupCard } from "./GroupCard";
 import { RefreshCcwIcon } from "lucide-react";
+import { ScrollArea } from "./ui/ScrollArea";
 
 export function MainView({
   catagories,
@@ -38,7 +39,7 @@ export function MainView({
         </button>
       </div>
       <div className="mx-2.5 border-b border-white/12" />
-      <div className="grow overflow-y-auto">
+      <ScrollArea className="h-32 grow">
         <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
           <div>
             {catagories.map((catagory) => (
@@ -67,7 +68,7 @@ export function MainView({
             ))}
           </div>
         </HeightMatch>
-      </div>
+      </ScrollArea>
     </div>
   );
 }
