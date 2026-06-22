@@ -28,6 +28,7 @@ export function GroupCard({
   color,
   onGroupClick,
   showReaction = true,
+  showTurn = true,
   highlight = false,
 }: {
   tokens: Token[];
@@ -35,6 +36,7 @@ export function GroupCard({
   color: string | null;
   onGroupClick: () => void;
   showReaction?: boolean;
+  showTurn?: boolean;
   highlight?: boolean;
 }) {
   const playerSelection = usePlayerSelection();
@@ -139,7 +141,7 @@ export function GroupCard({
           color="YELLOW"
         />
       )}
-      {!highlight && (
+      {!highlight && showTurn && (
         <IconToggle
           checked={hasTurn}
           onClick={() => {
