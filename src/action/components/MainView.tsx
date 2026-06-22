@@ -51,7 +51,12 @@ export function MainView({
                   .filter((group) => group.catagory === catagory)
                   .map((group) => (
                     <GroupCard
-                      key={group.color + group.catagory}
+                      key={
+                        group.tokens[0].item.id +
+                        group.catagory +
+                        group.name +
+                        group.color
+                      }
                       color={group.color}
                       name={group.name}
                       tokens={group.tokens}
