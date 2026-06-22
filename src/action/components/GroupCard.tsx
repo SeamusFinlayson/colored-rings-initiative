@@ -3,11 +3,24 @@ import { ReactionOutline } from "../icons/ReactionOutline";
 import { ReadyFilled } from "../icons/ReadyFilled";
 import { ReadyOutline } from "../icons/ReadyOutline";
 import TokenImage from "./TokenImage";
-import { cn } from "../../cn";
 import { IconToggle } from "./IconToggle";
 import { updateInitiaitiveData } from "../helpers/initiativeData";
 import type { Token } from "../types/Token";
 import { usePlayerSelection } from "../helpers/usePlayerSelection";
+import { EyeOffIcon } from "lucide-react";
+
+function getTokenMargin(count: number) {
+  const itemWidth = 40;
+  const containerWidth = 140;
+  const targetSpace = containerWidth / count;
+
+  const overflowMargin = itemWidth + 1 - targetSpace;
+  const perItemMargin = overflowMargin / count;
+
+  const margin = targetSpace - perItemMargin - itemWidth;
+
+  return margin;
+}
 
 export function GroupCard({
   tokens,
@@ -15,7 +28,6 @@ export function GroupCard({
   color,
   onGroupClick,
   showReaction = true,
-  showTurn = true,
   highlight = false,
 }: {
   tokens: Token[];
@@ -23,7 +35,6 @@ export function GroupCard({
   color: string | null;
   onGroupClick: () => void;
   showReaction?: boolean;
-  showTurn?: boolean;
   highlight?: boolean;
 }) {
   const playerSelection = usePlayerSelection();
@@ -54,63 +65,61 @@ export function GroupCard({
   const backgroundColor = color ? color + (hasTurn ? "40" : "20") : null;
   const barColor = color ? color + (hasTurn ? "" : "70") : null;
 
+  const hiddenTokenCount = tokens.filter((token) => !token.item.visible).length;
+
   return (
     <div
       style={backgroundColor ? { backgroundColor } : {}}
       className="flex h-12 items-stretch justify-between transition-colors"
     >
-      <div
-        style={barColor ? { backgroundColor: barColor } : {}}
-        data-wide={highlight}
-        className="w-1.5 shrink-0 transition-all data-[wide=true]:w-6"
-      />
+      <button className="flex grow hover:bg-white/10" onClick={onGroupClick}>
+        <div
+          style={barColor ? { backgroundColor: barColor } : {}}
+          data-wide={highlight}
+          className="w-1.5 shrink-0 transition-all data-[wide=true]:w-6"
+        />
 
-      <button
-        className="grid grow transition-colors hover:bg-white/8"
-        onClick={onGroupClick}
-      >
-        <div className="col-start-1 row-start-1 ml-1 flex self-center">
-          {tokens
-            .filter((_val, index) => index < 8)
-            .map((token, index) => (
-              <div
-                key={token.item.id}
-                style={{ zIndex: -index + 40 }}
-                className={cn({
-                  "-mr-1.5": tokens.length > 3,
-                  "-mr-3.75": tokens.length > 4,
-                  "-mr-5": tokens.length > 5,
-                  "-mr-5.75": tokens.length > 6,
-                  "mr-[-25.5px]": tokens.length > 7,
-                })}
-              >
-                <TokenImage
+        <div className="grid grow transition-colors">
+          <div className="col-start-1 row-start-1 ml-1 flex self-center">
+            {tokens.map((token, index) => {
+              return (
+                <div
                   key={token.item.id}
-                  src={token.item.image.url}
-                  outline={playerSelection.includes(token.item.id)}
-                />
-              </div>
-            ))}
-        </div>
-        <div className="relative z-50 col-start-1 row-start-1 w-full self-end justify-self-start truncate bg-linear-to-r from-white/70 via-white/70 to-white/0 px-1 dark:from-black/60 dark:via-black/20 dark:to-black/0">
-          <div
-            data-dim={!hasTurn}
-            className="max-w-full truncate text-left text-xs font-semibold text-nowrap text-ellipsis transition-opacity data-[dim=true]:opacity-50"
-          >
-            {name}
+                  style={{
+                    zIndex: -index + 10000,
+                    marginRight:
+                      tokens.length < 4 ? 4 : getTokenMargin(tokens.length),
+                  }}
+                >
+                  <TokenImage
+                    key={token.item.id}
+                    src={token.item.image.url}
+                    outline={playerSelection.includes(token.item.id)}
+                  />
+                </div>
+              );
+            })}
           </div>
-        </div>
-        <div className="z-50 col-start-1 row-start-1 flex gap-1 self-start justify-self-start px-1 pt-0.5 text-xs">
-          {tokens.length > 8 && (
-            <div className="rounded-full bg-white/70 px-1 font-semibold dark:bg-black/20">{`+${tokens.length - 8}`}</div>
+          <div className="relative z-10000 col-start-1 row-start-1 w-full self-end justify-self-start truncate bg-linear-to-r from-white/70 via-white/70 to-white/0 px-1 dark:from-black/60 dark:via-black/20 dark:to-black/0">
+            <div
+              data-dim={!hasTurn}
+              className="max-w-full truncate text-left text-xs font-semibold text-nowrap text-ellipsis transition-opacity data-[dim=true]:opacity-50"
+            >
+              {name}
+            </div>
+          </div>
+          {hiddenTokenCount > 0 && (
+            <div className="z-10000 col-start-1 row-start-1 flex gap-1 self-start justify-self-start px-1 pt-0.5 text-sm">
+              <div className="flex items-center gap-1 rounded-full bg-white/70 px-1 font-normal dark:bg-black">
+                {tokens.length > 1 && <div>{hiddenTokenCount}</div>}
+                <EyeOffIcon className="size-4 stroke-2" />
+              </div>
+            </div>
           )}
-          {/*<div className="font-semibold  bg-white/70 dark:bg-black/40 rounded-full px-1">
-            2 hidden
-          </div>*/}
         </div>
       </button>
 
-      {showReaction && (
+      {!highlight && showReaction && (
         <IconToggle
           checked={hasReaction}
           onClick={() => {
@@ -130,7 +139,7 @@ export function GroupCard({
           color="YELLOW"
         />
       )}
-      {showTurn && (
+      {!highlight && (
         <IconToggle
           checked={hasTurn}
           onClick={() => {

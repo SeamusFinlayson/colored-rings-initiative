@@ -129,7 +129,6 @@ export function SingleGroupView({
                   )
                 }
                 showReaction={selection.length === 0}
-                showTurn={selection.length === 0}
                 highlight={selection.includes(id)}
               />
             );
