@@ -175,7 +175,7 @@ export function GroupCard({
           text={reactionText}
           checkedIcon={<ReactionFilled />}
           unCheckedIcon={<ReactionOutline />}
-          color="YELLOW"
+          color="yellow"
         />
       )}
       {mode === "INITIATIVE" && (
@@ -210,7 +210,6 @@ export function GroupCard({
           text={turnText}
           checkedIcon={<ReadyFilled />}
           unCheckedIcon={<ReadyOutline />}
-          color="PINK"
         />
       )}
     </div>

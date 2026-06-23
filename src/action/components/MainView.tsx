@@ -17,12 +17,25 @@ export function MainView({
   tokenGroups: TokenGroup[];
   setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
+  const turnsRemaining = tokenGroups
+    .flatMap((tokenGroup) =>
+      tokenGroup.tokens.flatMap((token) => token.data.turnsRemaining),
+    )
+    .reduce((acc, val) => acc + val, 0);
+  const totalTurns = tokenGroups
+    .flatMap((tokenGroup) =>
+      tokenGroup.tokens.flatMap((token) => token.data.totalTurns),
+    )
+    .reduce((acc, val) => acc + val, 0);
+
   return (
     <div className="flex h-screen flex-col">
       <div className="flex h-12 items-center justify-between font-bold">
         <div className="ml-2.5">Initiative</div>
         <Button
           size={"icon"}
+          disabled={totalTurns === 0}
+          variant={turnsRemaining === 0 && totalTurns > 0 ? "purple" : "ghost"}
           onClick={() => {
             const tokens = tokenGroups.flatMap((group) => group.tokens);
             updateInitiaitiveData(

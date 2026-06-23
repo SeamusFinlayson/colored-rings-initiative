@@ -160,10 +160,7 @@ export function SingleGroupView({
           <div className="h-4" style={{ backgroundColor: tintedBackground }} />
         </HeightMatch>
       </ScrollArea>
-      <div
-        style={{ backgroundColor: tintedBackground }}
-        className="h-full grow"
-      />
+      <div style={{ backgroundColor: tintedBackground }} className="grow" />
     </div>
   );
 }

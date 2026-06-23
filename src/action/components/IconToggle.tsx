@@ -1,11 +1,12 @@
 import { cn } from "../../cn";
+import { Button } from "../ui/button";
 
 export function IconToggle({
   checkedIcon,
   unCheckedIcon,
   checked,
   text,
-  color = "DEFAULT",
+  color = "pink",
   onClick,
   onContextMenu,
   ...props
@@ -14,23 +15,14 @@ export function IconToggle({
   unCheckedIcon: React.ReactNode;
   checked: boolean;
   text?: string;
-  color: "YELLOW" | "PINK" | "DEFAULT";
+  color?: "yellow" | "pink";
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button
+    <Button
       {...props}
-      className={cn(
-        "grid w-12 shrink-0 place-items-center transition-colors",
-        { "hover:bg-pink-400/20 dark:hover:bg-pink-300/20": color === "PINK" },
-        {
-          "hover:bg-yellow-400/20 dark:hover:bg-yellow-300/20":
-            color === "YELLOW",
-        },
-        {
-          "hover:bg-purple-400/20 dark:hover:bg-purple-300/20":
-            color === "DEFAULT",
-        },
-      )}
+      variant={color}
+      size={"icon"}
+      className="flex-col"
       onClick={onClick}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -40,12 +32,7 @@ export function IconToggle({
       <div className="grid place-items-center py-1">
         <div
           data-hide={!checked}
-          className={cn(
-            "col-start-1 row-start-1 size-6 transition-opacity data-[hide=true]:opacity-0",
-            { "text-pink-800 dark:text-pink-200": color === "PINK" },
-            { "text-yellow-800 dark:text-yellow-100": color === "YELLOW" },
-            { "text-purple-600 dark:text-purple-400": color === "DEFAULT" },
-          )}
+          className="col-start-1 row-start-1 size-6 transition-opacity data-[hide=true]:opacity-0"
         >
           {checkedIcon}
         </div>
@@ -65,6 +52,6 @@ export function IconToggle({
           {text}
         </div>
       )}
-    </button>
+    </Button>
   );
 }
