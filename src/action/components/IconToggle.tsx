@@ -21,13 +21,13 @@ export function IconToggle({
       {...props}
       className={cn(
         "grid w-12 shrink-0 place-items-center transition-colors",
-        { "hover:bg-pink-400/10 dark:hover:bg-pink-300/10": color === "PINK" },
+        { "hover:bg-pink-400/20 dark:hover:bg-pink-300/20": color === "PINK" },
         {
-          "hover:bg-yellow-400/10 dark:hover:bg-yellow-300/10":
+          "hover:bg-yellow-400/20 dark:hover:bg-yellow-300/20":
             color === "YELLOW",
         },
         {
-          "hover:bg-purple-400/10 dark:hover:bg-purple-300/10":
+          "hover:bg-purple-400/20 dark:hover:bg-purple-300/20":
             color === "DEFAULT",
         },
       )}

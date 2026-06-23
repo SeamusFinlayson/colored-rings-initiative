@@ -26,7 +26,7 @@ export function useAppState(): [
         tokenGroups,
         appState.groupSelector,
       );
-      if (selectedGroup) return;
+      if (selectedGroup?.tokens?.length !== 0) return;
       setAppState({ ...appState, groupSelector: undefined, selectedItems: [] });
     },
   );

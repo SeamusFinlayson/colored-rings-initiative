@@ -7,8 +7,12 @@ import { IconToggle } from "./IconToggle";
 import { updateInitiaitiveData } from "../helpers/initiativeData";
 import type { Token } from "../types/Token";
 import { usePlayerSelection } from "../helpers/usePlayerSelection";
-import { EyeOffIcon } from "lucide-react";
+import { CheckIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import {
+  getColorfulSurface,
+  getTintedBackground,
+} from "../helpers/colorCssHelpers";
 
 function getTokenMargin(count: number) {
   const itemWidth = 40;
@@ -30,8 +34,8 @@ export function GroupCard({
   onClick,
   onDoubleClick,
   showReaction = true,
-  showTurn = true,
-  highlight = false,
+  selected = false,
+  mode = "INITIATIVE",
 }: {
   tokens: Token[];
   name: string;
@@ -39,8 +43,8 @@ export function GroupCard({
   onClick?: () => void;
   onDoubleClick?: () => void;
   showReaction?: boolean;
-  showTurn?: boolean;
-  highlight?: boolean;
+  selected?: boolean;
+  mode?: "INITIATIVE" | "SELECTION";
 }) {
   const playerSelection = usePlayerSelection();
 
@@ -60,15 +64,19 @@ export function GroupCard({
   const hasReaction = reactionsRemaining > 0;
   const hasTurn = turnsRemaining > 0;
 
+  const highlightBar = mode === "INITIATIVE" && hasTurn;
+
+  const barColor = highlightBar
+    ? (color ?? getTintedBackground(color))
+    : getColorfulSurface(color);
+  const backgroundColor = getTintedBackground(color);
+
   const groupSize = tokens.length;
 
   const reactionText =
     groupSize > 1 ? `${reactionsRemaining}/${groupSize}` : undefined;
   const turnText =
     totalTurns > 1 ? `${turnsRemaining}/${totalTurns}` : undefined;
-
-  const backgroundColor = color ? color + (hasTurn ? "40" : "20") : null;
-  const barColor = color ? color + (hasTurn ? "" : "70") : null;
 
   const hiddenTokenCount = tokens.filter((token) => !token.item.visible).length;
 
@@ -79,7 +87,7 @@ export function GroupCard({
     >
       <Button
         core={"none"}
-        className="flex grow gap-0 px-0 hover:bg-white/10"
+        className="group flex grow gap-0 px-0"
         onClick={onClick}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -88,11 +96,19 @@ export function GroupCard({
       >
         <div
           style={
-            barColor ? { backgroundColor: barColor } : { borderWidth: "1px" }
+            color === null
+              ? { borderWidth: "2px" }
+              : { backgroundColor: barColor }
           }
-          data-wide={highlight}
-          className="w-1.5 shrink-0 border-white/20 transition-all data-[wide=true]:w-6"
-        />
+          data-wide={mode === "SELECTION" && selected}
+          className="grid w-1.5 shrink-0 place-items-center overflow-clip border-white/60 transition-all data-[wide=true]:w-12"
+        >
+          <div className="z-50 col-start-1 row-start-1 size-full transition-colors group-hover:bg-white/20"></div>
+          <CheckIcon
+            data-visible={mode === "SELECTION" && selected}
+            className="col-start-1 row-start-1 opacity-0 transition-opacity data-[visible=true]:opacity-100"
+          />
+        </div>
 
         <div className="grid grow transition-colors">
           <div className="col-start-1 row-start-1 ml-1 flex self-center">
@@ -134,7 +150,7 @@ export function GroupCard({
         </div>
       </Button>
 
-      {!highlight && showReaction && (
+      {mode === "INITIATIVE" && showReaction && (
         <IconToggle
           checked={hasReaction}
           onClick={() => {
@@ -162,7 +178,7 @@ export function GroupCard({
           color="YELLOW"
         />
       )}
-      {!highlight && showTurn && (
+      {mode === "INITIATIVE" && (
         <IconToggle
           checked={hasTurn}
           onClick={() => {
