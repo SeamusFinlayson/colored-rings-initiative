@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { TokenGroup } from "../../types/TokenGroup";
 import { GroupCard } from "../GroupCard";
 import { ArrowLeftIcon, FocusIcon, ListXIcon, XIcon } from "lucide-react";
@@ -12,33 +11,45 @@ import { switchToCatagory } from "../../helpers/switchToCatagory";
 import { hexToHsl } from "../../helpers/hexToHsl";
 import { SwitchCatagoryPopover } from "./SwitchCatagoryPopover";
 import { Button } from "../../ui/button";
+import type { AppState } from "../../types/AppState";
 
 export function SingleGroupView({
+  selectedItems,
   tokenGroup,
   catagories,
-  onBackClick,
+  setAppState,
 }: {
+  selectedItems: string[];
   tokenGroup: TokenGroup;
   catagories: string[];
-  onBackClick: () => void;
+  setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
-  const [selection, setSelection] = useState<string[]>([]);
-
   const hsl = hexToHsl(tokenGroup.color ?? "#000000");
-  console.log(hsl);
   const backgroundColor = `hsl(${hsl.h} ${hsl.s} ${20})`;
+
+  const setSelection = (selectedItems: string[]) =>
+    setAppState((prev) => ({ ...prev, selectedItems }));
 
   return (
     <div className="flex h-screen flex-col">
       <div
         style={{
           backgroundColor:
-            tokenGroup.color + (selection.length > 0 ? "80" : "40"),
+            tokenGroup.color + (selectedItems.length > 0 ? "80" : "40"),
         }}
       >
-        {selection.length === 0 ? (
+        {selectedItems.length === 0 ? (
           <div className="flex size-full h-12 items-center font-semibold">
-            <Button size={"icon"} onClick={onBackClick}>
+            <Button
+              size={"icon"}
+              onClick={() =>
+                setAppState((prev) => ({
+                  ...prev,
+                  groupSelector: undefined,
+                  selectedItems: [],
+                }))
+              }
+            >
               <ArrowLeftIcon />
             </Button>
             <Button
@@ -60,7 +71,7 @@ export function SingleGroupView({
             >
               <XIcon />
               <div className="grid min-w-3 place-items-center font-bold">
-                {selection.length}
+                {selectedItems.length}
               </div>
             </Button>
             <div className="my-3 border-l border-white"></div>
@@ -69,8 +80,8 @@ export function SingleGroupView({
               title="Focus"
               className="grow"
               onClick={() => {
-                OBR.player.select(selection);
-                focusItems(selection);
+                OBR.player.select(selectedItems);
+                focusItems(selectedItems);
                 setSelection([]);
               }}
             >
@@ -81,8 +92,13 @@ export function SingleGroupView({
               backgroundColor={backgroundColor}
               catagories={catagories}
               onSelection={(catagory) => {
-                OBR.player.select(selection);
-                switchToCatagory(catagory, selection);
+                OBR.player.select(selectedItems);
+                switchToCatagory(catagory, selectedItems);
+                setAppState((prev) => ({
+                  ...prev,
+                  selectedItems: [],
+                  groupSelector: undefined,
+                }));
               }}
             />
             <Button
@@ -92,7 +108,7 @@ export function SingleGroupView({
               onClick={() => {
                 removeFromInitiative(
                   tokenGroup.tokens.filter((token) =>
-                    selection.includes(token.item.id),
+                    selectedItems.includes(token.item.id),
                   ),
                 );
                 setSelection([]);
@@ -126,16 +142,16 @@ export function SingleGroupView({
                   color={color}
                   name={token.item.name}
                   tokens={[token]}
-                  onGroupClick={() =>
+                  onClick={() =>
                     setSelection(
-                      selection.includes(id)
-                        ? selection.filter((val) => val !== id)
-                        : [...selection, id],
+                      selectedItems.includes(id)
+                        ? selectedItems.filter((val) => val !== id)
+                        : [...selectedItems, id],
                     )
                   }
-                  showReaction={selection.length === 0}
-                  showTurn={selection.length === 0}
-                  highlight={selection.includes(id)}
+                  showReaction={selectedItems.length === 0}
+                  showTurn={selectedItems.length === 0}
+                  highlight={selectedItems.includes(id)}
                 />
               );
             })}

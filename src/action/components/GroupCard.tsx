@@ -27,7 +27,8 @@ export function GroupCard({
   tokens,
   name,
   color,
-  onGroupClick,
+  onClick,
+  onDoubleClick,
   showReaction = true,
   showTurn = true,
   highlight = false,
@@ -35,7 +36,8 @@ export function GroupCard({
   tokens: Token[];
   name: string;
   color: string | null;
-  onGroupClick: () => void;
+  onClick?: () => void;
+  onDoubleClick?: () => void;
   showReaction?: boolean;
   showTurn?: boolean;
   highlight?: boolean;
@@ -78,7 +80,11 @@ export function GroupCard({
       <Button
         core={"none"}
         className="flex grow gap-0 px-0 hover:bg-white/10"
-        onClick={onGroupClick}
+        onClick={onClick}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          if (onDoubleClick) onDoubleClick();
+        }}
       >
         <div
           style={
@@ -142,6 +148,14 @@ export function GroupCard({
                   })),
             );
           }}
+          onContextMenu={() => {
+            updateInitiaitiveData(
+              tokens.map((token) => ({
+                itemId: token.item.id,
+                data: { hasReaction: !hasReaction },
+              })),
+            );
+          }}
           text={reactionText}
           checkedIcon={<ReactionFilled />}
           unCheckedIcon={<ReactionOutline />}
@@ -167,6 +181,14 @@ export function GroupCard({
                       turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
                     },
                   })),
+            );
+          }}
+          onContextMenu={() => {
+            updateInitiaitiveData(
+              tokens.map((token) => ({
+                itemId: token.item.id,
+                data: { turnsRemaining: hasTurn ? 0 : token.data.totalTurns },
+              })),
             );
           }}
           text={turnText}

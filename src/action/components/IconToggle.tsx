@@ -4,19 +4,21 @@ export function IconToggle({
   checkedIcon,
   unCheckedIcon,
   checked,
-  onClick,
   text,
   color = "DEFAULT",
+  onClick,
+  onContextMenu,
+  ...props
 }: {
   checkedIcon: React.ReactNode;
   unCheckedIcon: React.ReactNode;
   checked: boolean;
-  onClick: () => void;
   text?: string;
   color: "YELLOW" | "PINK" | "DEFAULT";
-}) {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
+      {...props}
       className={cn(
         "grid w-12 shrink-0 place-items-center transition-colors",
         { "hover:bg-pink-400/10 dark:hover:bg-pink-300/10": color === "PINK" },
@@ -30,6 +32,10 @@ export function IconToggle({
         },
       )}
       onClick={onClick}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        if (onContextMenu) onContextMenu(e);
+      }}
     >
       <div className="grid place-items-center py-1">
         <div

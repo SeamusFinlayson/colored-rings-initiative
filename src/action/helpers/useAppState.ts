@@ -2,41 +2,48 @@ import type { Item } from "@owlbear-rodeo/sdk";
 import OBR from "@owlbear-rodeo/sdk";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { TokenGroup } from "../types/TokenGroup";
-import type { GroupSelector } from "../types/GroupSelector";
 import { parseItems } from "./parseItems";
 import { getSelectedGroup } from "./getSelectedGroup";
 import { updateContextMenus } from "./updateContextMenus";
+import type { AppState } from "../types/AppState";
 
-type AppState = {
-  tokenGroups: TokenGroup[];
-  catagories: string[];
-  selectedGroup: TokenGroup | undefined;
-  setGroupSelector: (groupSelector: GroupSelector | undefined) => void;
-};
-
-export function useAppState(): AppState {
-  const [groupSelector, setGroupSelector] = useState<GroupSelector>();
-  const [itemsData, setItemsData] = useState(parseItems([]));
+export function useAppState(): [
+  AppState,
+  React.Dispatch<React.SetStateAction<AppState>>,
+] {
+  const [appState, setAppState] = useState<AppState>({
+    ...parseItems([]),
+    groupSelector: undefined,
+    selectedItems: [],
+  });
   const items = useRef<Item[]>(undefined);
 
   const checkInvalidGroupSelector = useEffectEvent(
     (tokenGroups?: TokenGroup[]) => {
-      if (!groupSelector) return;
-      if (!tokenGroups) tokenGroups = itemsData.tokenGroups;
-      const selectedGroup = getSelectedGroup(tokenGroups, groupSelector);
+      if (!appState.groupSelector) return;
+      if (!tokenGroups) tokenGroups = appState.tokenGroups;
+      const selectedGroup = getSelectedGroup(
+        tokenGroups,
+        appState.groupSelector,
+      );
       if (selectedGroup) return;
-      setGroupSelector(undefined);
+      setAppState({ ...appState, groupSelector: undefined, selectedItems: [] });
     },
   );
 
   useEffect(() => {
     const updateItemsData = (newItems?: Item[]) => {
-      let newItemsData = undefined;
+      let newItemsData:
+        | {
+            catagories: string[];
+            tokenGroups: TokenGroup[];
+          }
+        | undefined = undefined;
       if (newItems) {
         items.current = newItems;
         newItemsData = parseItems(newItems);
 
-        setItemsData(newItemsData);
+        setAppState((prev) => ({ ...prev, ...newItemsData }));
         updateContextMenus(newItemsData.tokenGroups, newItems);
       }
 
@@ -49,7 +56,5 @@ export function useAppState(): AppState {
     return OBR.scene.items.onChange(updateItemsData);
   }, []);
 
-  const selectedGroup = getSelectedGroup(itemsData.tokenGroups, groupSelector);
-
-  return { ...itemsData, selectedGroup, setGroupSelector };
+  return [appState, setAppState];
 }

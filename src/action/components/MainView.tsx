@@ -1,21 +1,21 @@
 import OBR from "@owlbear-rodeo/sdk";
 import HeightMatch from "../helpers/HeightMatch";
 import { updateInitiaitiveData } from "../helpers/initiativeData";
-import type { GroupSelector } from "../types/GroupSelector";
 import type { TokenGroup } from "../types/TokenGroup";
 import { GroupCard } from "./GroupCard";
 import { RefreshCcwIcon } from "lucide-react";
 import { ScrollArea } from "../ui/scrollArea";
 import { Button } from "../ui/button";
+import type { AppState } from "../types/AppState";
 
 export function MainView({
   catagories,
   tokenGroups,
-  onSelect,
+  setAppState,
 }: {
   catagories: string[];
   tokenGroups: TokenGroup[];
-  onSelect: (selector: GroupSelector | undefined) => void;
+  setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
   return (
     <div className="flex h-screen flex-col">
@@ -65,12 +65,28 @@ export function MainView({
                       color={group.color}
                       name={group.name}
                       tokens={group.tokens}
-                      onGroupClick={() =>
-                        onSelect({
-                          color: group.color,
-                          catagory: group.catagory,
-                          name: group.name,
-                        })
+                      onClick={() =>
+                        setAppState((prev) => ({
+                          ...prev,
+                          groupSelector: {
+                            color: group.color,
+                            catagory: group.catagory,
+                            name: group.name,
+                          },
+                        }))
+                      }
+                      onDoubleClick={() =>
+                        setAppState((prev) => ({
+                          ...prev,
+                          selectedItems: group.tokens.map(
+                            (token) => token.item.id,
+                          ),
+                          groupSelector: {
+                            color: group.color,
+                            catagory: group.catagory,
+                            name: group.name,
+                          },
+                        }))
                       }
                     />
                   ))}
