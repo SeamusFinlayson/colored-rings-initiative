@@ -5,7 +5,8 @@ import type { GroupSelector } from "../types/GroupSelector";
 import type { TokenGroup } from "../types/TokenGroup";
 import { GroupCard } from "./GroupCard";
 import { RefreshCcwIcon } from "lucide-react";
-import { ScrollArea } from "./ui/ScrollArea";
+import { ScrollArea } from "../ui/scrollArea";
+import { Button } from "../ui/button";
 
 export function MainView({
   catagories,
@@ -20,8 +21,8 @@ export function MainView({
     <div className="flex h-screen flex-col">
       <div className="flex h-12 items-center justify-between font-bold">
         <div className="ml-2.5">Initiative</div>
-        <button
-          className="flex size-12 items-center justify-center hover:bg-white/20"
+        <Button
+          size={"icon"}
           onClick={() => {
             const tokens = tokenGroups.flatMap((group) => group.tokens);
             updateInitiaitiveData(
@@ -36,12 +37,16 @@ export function MainView({
           }}
         >
           <RefreshCcwIcon />
-        </button>
+        </Button>
       </div>
       <div className="mx-2.5 border-b border-white/12" />
-      <ScrollArea className="h-32 grow">
-        <HeightMatch setHeight={(height) => OBR.action.setHeight(height + 48)}>
-          <div>
+      <ScrollArea className="h-0 grow">
+        <HeightMatch
+          setHeight={(height) =>
+            OBR.action.setHeight(Math.max(300, height + 48))
+          }
+        >
+          <div className="pb-4">
             {catagories.map((catagory) => (
               <div key={catagory} className="flex flex-col">
                 <div className="mt-2 mb-2 ml-2.5 text-sm text-black/60 uppercase dark:text-white/70">

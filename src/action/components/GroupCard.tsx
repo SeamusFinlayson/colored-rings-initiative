@@ -8,6 +8,7 @@ import { updateInitiaitiveData } from "../helpers/initiativeData";
 import type { Token } from "../types/Token";
 import { usePlayerSelection } from "../helpers/usePlayerSelection";
 import { EyeOffIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 function getTokenMargin(count: number) {
   const itemWidth = 40;
@@ -72,13 +73,19 @@ export function GroupCard({
   return (
     <div
       style={backgroundColor ? { backgroundColor } : {}}
-      className="flex h-12 items-stretch justify-between transition-colors"
+      className="isolate flex h-12 items-stretch justify-between transition-colors"
     >
-      <button className="flex grow hover:bg-white/10" onClick={onGroupClick}>
+      <Button
+        core={"none"}
+        className="flex grow gap-0 px-0 hover:bg-white/10"
+        onClick={onGroupClick}
+      >
         <div
-          style={barColor ? { backgroundColor: barColor } : {}}
+          style={
+            barColor ? { backgroundColor: barColor } : { borderWidth: "1px" }
+          }
           data-wide={highlight}
-          className="w-1.5 shrink-0 transition-all data-[wide=true]:w-6"
+          className="w-1.5 shrink-0 border-white/20 transition-all data-[wide=true]:w-6"
         />
 
         <div className="grid grow transition-colors">
@@ -119,7 +126,7 @@ export function GroupCard({
             </div>
           )}
         </div>
-      </button>
+      </Button>
 
       {!highlight && showReaction && (
         <IconToggle

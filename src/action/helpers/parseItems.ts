@@ -46,7 +46,9 @@ function getCatagories(tokens: Token[]) {
     ...new Set([
       "Party",
       "Adversaries",
-      ...tokens.map((token) => token.data.catagory),
+      ...tokens
+        .map((token) => token.data.catagory)
+        .sort((a, b) => a.localeCompare(b)),
     ]),
   ];
 }

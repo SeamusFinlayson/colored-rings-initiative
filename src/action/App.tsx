@@ -1,4 +1,4 @@
-import { SingleGroupView } from "./components/SingleGroupView";
+import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
 import { MainView } from "./components/MainView";
 import { useAppState } from "./helpers/useAppState";
 
@@ -14,6 +14,7 @@ export function App() {
       {selectedGroup ? (
         <SingleGroupView
           tokenGroup={selectedGroup}
+          catagories={catagories}
           onBackClick={() => setGroupSelector(undefined)}
         />
       ) : (
