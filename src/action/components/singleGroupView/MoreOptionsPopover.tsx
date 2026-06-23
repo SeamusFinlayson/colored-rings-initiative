@@ -30,7 +30,7 @@ export function MoreOptionsPopover({
     <Popover>
       <PopoverTrigger
         render={
-          <Button title="Options" className="grow">
+          <Button title="Options" size={"icon"}>
             <MoreVerticalIcon />
           </Button>
         }
@@ -41,7 +41,7 @@ export function MoreOptionsPopover({
         </PopoverHeader>
         <div className="space-y-4 p-2.5 pt-0 pb-4">
           <div>
-            <div className="text-xs">Set Turns</div>
+            <div>Set Turns</div>
             <div className="flex justify-between">
               <div className="flex gap-0.5">
                 <Button

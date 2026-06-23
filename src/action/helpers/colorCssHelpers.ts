@@ -10,5 +10,5 @@ export function getColorfulSurface(hex: string | null) {
 
 export function getMutedSurface(hex: string | null) {
   if (!hex) hex = "grey";
-  return `hsl(from ${hex} calc(h + 10) calc(s * 0.2) calc(l * 0.6))`;
+  return `hsl(from ${hex} h calc(s * 0.25) calc(l * 0.2 + 20))`;
 }

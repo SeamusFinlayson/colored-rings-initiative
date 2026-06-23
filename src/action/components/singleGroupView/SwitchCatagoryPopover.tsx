@@ -26,7 +26,7 @@ export function SwitchCatagoryPopover({
     <Popover>
       <PopoverTrigger
         render={
-          <Button title="Move to Catagory" className="grow">
+          <Button title="Move to Catagory" size={"icon"}>
             <ArrowUpDownIcon />
           </Button>
         }

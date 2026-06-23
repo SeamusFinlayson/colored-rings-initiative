@@ -46,21 +46,23 @@ export function SingleGroupView({
           backgroundColor:
             selectedItems.length > 0 ? colorfulSurface : tintedBackground,
         }}
+        className="transition-colors"
       >
-        {selectedItems.length === 0 ? (
-          <div className="flex size-full h-12 items-center font-semibold">
-            <Button
-              size={"icon"}
-              onClick={() =>
-                setAppState((prev) => ({
-                  ...prev,
-                  groupSelector: undefined,
-                  selectedItems: [],
-                }))
-              }
-            >
-              <ArrowLeftIcon />
-            </Button>
+        <div className="flex h-12 items-stretch font-semibold">
+          <Button
+            size={"icon"}
+            onClick={() =>
+              setAppState((prev) => ({
+                ...prev,
+                groupSelector: undefined,
+                selectedItems: [],
+              }))
+            }
+          >
+            <ArrowLeftIcon />
+          </Button>
+          <div className="my-3 border-l border-white" />
+          {selectedItems.length === 0 ? (
             <Button
               title="Select All"
               className="shrink grow justify-start text-left"
@@ -70,54 +72,53 @@ export function SingleGroupView({
             >
               {tokenGroup.name}
             </Button>
-          </div>
-        ) : (
-          <div className="flex h-12">
-            <Button
-              title="Deselect All"
-              className="flex h-12 items-center justify-center gap-2 px-4 hover:bg-white/20"
-              onClick={() => setSelection([])}
-            >
-              <XIcon />
-              <div className="grid min-w-3 place-items-center font-bold">
-                {selectedItems.length}
-              </div>
-            </Button>
-            <div className="my-3 border-l border-white"></div>
-            <Button
-              size={"icon"}
-              title="Focus"
-              className="grow"
-              onClick={() => {
-                OBR.player.select(selectedItems);
-                focusItems(selectedItems);
-                setSelection([]);
-              }}
-            >
-              <FocusIcon />
-            </Button>
-            <SwitchCatagoryPopover
-              currentCatagory={tokenGroup.catagory}
-              backgroundColor={mutedSurface}
-              catagories={catagories}
-              onSelection={(catagory) => {
-                OBR.player.select(selectedItems);
-                switchToCatagory(catagory, selectedItems);
-                setAppState((prev) => ({
-                  ...prev,
-                  selectedItems: [],
-                  groupSelector: undefined,
-                }));
-              }}
-            />
-            <MoreOptionsPopover
-              backgroundColor={mutedSurface}
-              selectedItems={selectedItems}
-              setSelection={setSelection}
-              tokenGroup={tokenGroup}
-            />
-          </div>
-        )}
+          ) : (
+            <>
+              <Button
+                title="Deselect All"
+                size={"icon"}
+                className="flex h-12 grow items-center justify-center gap-1 hover:bg-white/20"
+                onClick={() => setSelection([])}
+              >
+                <XIcon />
+                <div className="grid min-w-3 place-items-center font-bold">
+                  {selectedItems.length}
+                </div>
+              </Button>
+              <Button
+                size={"icon"}
+                title="Focus"
+                onClick={() => {
+                  OBR.player.select(selectedItems);
+                  focusItems(selectedItems);
+                  setSelection([]);
+                }}
+              >
+                <FocusIcon />
+              </Button>
+              <SwitchCatagoryPopover
+                currentCatagory={tokenGroup.catagory}
+                backgroundColor={mutedSurface}
+                catagories={catagories}
+                onSelection={(catagory) => {
+                  OBR.player.select(selectedItems);
+                  switchToCatagory(catagory, selectedItems);
+                  setAppState((prev) => ({
+                    ...prev,
+                    selectedItems: [],
+                    groupSelector: undefined,
+                  }));
+                }}
+              />
+              <MoreOptionsPopover
+                backgroundColor={mutedSurface}
+                selectedItems={selectedItems}
+                setSelection={setSelection}
+                tokenGroup={tokenGroup}
+              />
+            </>
+          )}
+        </div>
       </div>
       <ScrollArea className="max-h-[calc(100%-48px)]">
         <HeightMatch
