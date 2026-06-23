@@ -43,7 +43,7 @@ export function MainView({
       <ScrollArea className="h-0 grow">
         <HeightMatch
           setHeight={(height) =>
-            OBR.action.setHeight(Math.max(300, height + 48))
+            OBR.action.setHeight(Math.max(300, height + 48 + 1))
           }
         >
           <div className="pb-4">

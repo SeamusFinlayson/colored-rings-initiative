@@ -1,9 +1,8 @@
 import type { TokenGroup } from "../../types/TokenGroup";
 import { GroupCard } from "../GroupCard";
-import { ArrowLeftIcon, FocusIcon, ListXIcon, XIcon } from "lucide-react";
+import { ArrowLeftIcon, FocusIcon, XIcon } from "lucide-react";
 import OBR from "@owlbear-rodeo/sdk";
 import { focusItems } from "../../helpers/focusItems";
-import { removeFromInitiative } from "../../helpers/removeFromInitiative";
 import HeightMatch from "../../helpers/HeightMatch";
 import { ScrollArea } from "../../ui/scrollArea";
 
@@ -16,6 +15,8 @@ import {
   getMutedSurface,
   getTintedBackground,
 } from "../../helpers/colorCssHelpers";
+import { MoreOptionsPopover } from "./MoreOptionsPopover";
+import { useCallback } from "react";
 
 export function SingleGroupView({
   selectedItems,
@@ -32,8 +33,11 @@ export function SingleGroupView({
   const colorfulSurface = getColorfulSurface(tokenGroup.color);
   const mutedSurface = getMutedSurface(tokenGroup.color);
 
-  const setSelection = (selectedItems: string[]) =>
-    setAppState((prev) => ({ ...prev, selectedItems }));
+  const setSelection = useCallback(
+    (selectedItems: string[]) =>
+      setAppState((prev) => ({ ...prev, selectedItems })),
+    [setAppState],
+  );
 
   return (
     <div className="flex h-screen flex-col">
@@ -106,28 +110,19 @@ export function SingleGroupView({
                 }));
               }}
             />
-            <Button
-              size={"icon"}
-              title="Remove"
-              className="grow"
-              onClick={() => {
-                removeFromInitiative(
-                  tokenGroup.tokens.filter((token) =>
-                    selectedItems.includes(token.item.id),
-                  ),
-                );
-                setSelection([]);
-              }}
-            >
-              <ListXIcon />
-            </Button>
+            <MoreOptionsPopover
+              backgroundColor={mutedSurface}
+              selectedItems={selectedItems}
+              setSelection={setSelection}
+              tokenGroup={tokenGroup}
+            />
           </div>
         )}
       </div>
       <ScrollArea className="max-h-[calc(100%-48px)]">
         <HeightMatch
           setHeight={(height) => {
-            OBR.action.setHeight(Math.max(360, height + 48));
+            OBR.action.setHeight(Math.max(360, height + 48 + 1));
           }}
         >
           <div>

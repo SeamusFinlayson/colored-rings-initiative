@@ -1,7 +1,7 @@
-import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
 import { MainView } from "./components/MainView";
 import { useAppState } from "./helpers/useAppState";
 import { getSelectedGroup } from "./helpers/getSelectedGroup";
+import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
 
 export function App() {
   const [appState, setAppState] = useAppState();
