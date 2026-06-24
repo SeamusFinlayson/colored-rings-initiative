@@ -28,8 +28,9 @@ export function useAppState(): [
   });
 
   useEffect(() => {
-    const updateItemsData = (newItems: Item[]) => {
+    const updateItemsData = (newItems?: Item[]) => {
       items.current = newItems;
+      newItems ??= [];
       const { catagories, tokenGroups } = parseItems(newItems);
 
       updateContextMenus(tokenGroups, newItems);
@@ -47,7 +48,7 @@ export function useAppState(): [
     };
 
     if (!sceneIsReady) {
-      updateItemsData([]);
+      updateItemsData();
     } else if (!items.current) {
       OBR.scene.items.getItems().then(updateItemsData);
     }
