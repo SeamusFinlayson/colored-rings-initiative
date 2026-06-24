@@ -7,14 +7,19 @@ import { RefreshCcwIcon } from "lucide-react";
 import { ScrollArea } from "../ui/scrollArea";
 import { Button } from "../ui/button";
 import type { AppState } from "../types/AppState";
+import { RoundCounter } from "./RoundCounter";
 
 export function MainView({
   catagories,
   tokenGroups,
+  roundNumber,
+  updateRoundNumber,
   setAppState,
 }: {
   catagories: string[];
   tokenGroups: TokenGroup[];
+  roundNumber: number;
+  updateRoundNumber: (number: number) => void;
   setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
   const turnsRemaining = tokenGroups
@@ -28,29 +33,39 @@ export function MainView({
     )
     .reduce((acc, val) => acc + val, 0);
 
+  const lastTurn = turnsRemaining === 0 && totalTurns;
+
   return (
     <div className="flex h-screen flex-col">
       <div className="flex h-12 items-center justify-between font-bold">
         <div className="ml-2.5">Initiative</div>
-        <Button
-          size={"icon"}
-          disabled={totalTurns === 0}
-          variant={turnsRemaining === 0 && totalTurns > 0 ? "purple" : "ghost"}
-          onClick={() => {
-            const tokens = tokenGroups.flatMap((group) => group.tokens);
-            updateInitiaitiveData(
-              tokens.map((token) => ({
-                itemId: token.item.id,
-                data: {
-                  hasReaction: true,
-                  turnsRemaining: token.data.totalTurns,
-                },
-              })),
-            );
-          }}
-        >
-          <RefreshCcwIcon />
-        </Button>
+
+        <div className="flex">
+          <RoundCounter
+            roundNumber={roundNumber}
+            updateRoundNumber={updateRoundNumber}
+          />
+          <Button
+            size={"icon"}
+            disabled={totalTurns === 0}
+            variant={lastTurn ? "purple" : "ghost"}
+            onClick={() => {
+              const tokens = tokenGroups.flatMap((group) => group.tokens);
+              updateInitiaitiveData(
+                tokens.map((token) => ({
+                  itemId: token.item.id,
+                  data: {
+                    hasReaction: true,
+                    turnsRemaining: token.data.totalTurns,
+                  },
+                })),
+              );
+              if (lastTurn) updateRoundNumber(roundNumber + 1);
+            }}
+          >
+            <RefreshCcwIcon />
+          </Button>
+        </div>
       </div>
       <div className="mx-2.5 border-b border-white/12" />
       <ScrollArea className="h-0 grow">
