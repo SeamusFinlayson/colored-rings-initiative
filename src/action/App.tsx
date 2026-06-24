@@ -5,7 +5,11 @@ import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
 import { useSceneMetadata } from "./helpers/useSceneMetadata";
 import { getPluginId } from "../getPluginId";
 import { SceneDataZod } from "./types/SceneData";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import {
+  broadcastRoundChangeEventMessage,
+  handleSetRoundNumberMessage,
+} from "./helpers/broadcastRoundImplementation";
 
 export function App() {
   const [appState, setAppState] = useAppState();
@@ -23,10 +27,17 @@ export function App() {
   );
 
   const updateSceneData = sceneData.update;
-  const updateround = useCallback(
-    (round: number) => updateSceneData({ round }),
+  const updateRound = useCallback(
+    (round: number) => {
+      updateSceneData({ round });
+      broadcastRoundChangeEventMessage(round);
+    },
     [updateSceneData],
   );
+
+  useEffect(() => {
+    handleSetRoundNumberMessage((data) => updateRound(data.roundNumber));
+  }, [updateRound]);
 
   return (
     <div className="text-black dark:bg-transparent dark:text-white">
@@ -40,7 +51,7 @@ export function App() {
       ) : (
         <MainView
           round={sceneData.value.round}
-          updateround={updateround}
+          updateround={updateRound}
           catagories={catagories}
           tokenGroups={tokenGroups}
           setAppState={setAppState}

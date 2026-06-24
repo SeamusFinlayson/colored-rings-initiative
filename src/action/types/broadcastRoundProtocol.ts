@@ -10,10 +10,10 @@
   Draw Steel Tools will open a popover to handle this event unless that behaviour has been disabled by the user in settings. The round number will be saved to local storage so it can be used by Draw Steel Tools either way.
 */
 export const ROUND_CHANGE_EVENT_CHANNEL = "general.initiative.roundChange";
-export type RoundChangeData = { round: number | null };
+export type RoundChangeData = { roundNumber: number | null };
 
 /*
   Draw Steel Tools will emit a set round message when the round is changed by the malice calculator. This is rebroadcast as a round change event by Pretty Sordid to sync any other extensions. Other tools that can edit the round may be added in the future and these will also emit set round messages.
 */
 export const SET_ROUND_CHANNEL = "general.initiative.setRound";
-export type SetRoundData = { round: number };
+export type SetRoundData = { roundNumber: number };

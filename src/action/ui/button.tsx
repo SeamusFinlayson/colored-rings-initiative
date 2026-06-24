@@ -5,7 +5,7 @@ const buttonVariants = cva("", {
   variants: {
     core: {
       default:
-        "flex items-center-safe shrink-0 transition-[colors_opacity] justify-center disabled:opacity-50 disabled:pointer-events-none text-sm overflow-clip",
+        "flex font-semibold items-center-safe shrink-0 transition-[colors_opacity] justify-center disabled:opacity-50 disabled:pointer-events-none text-sm overflow-clip",
       none: "transition-[colors_opacity] disabled:opacity-50 disabled:pointer-events-none",
     },
     variant: {

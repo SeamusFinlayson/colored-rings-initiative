@@ -22,8 +22,8 @@ export function MainView({
 }) {
   return (
     <div className="flex h-screen flex-col">
-      <div className="flex h-12 items-center justify-between font-bold">
-        <div className="ml-2.5">Initiative</div>
+      <div className="flex h-12 items-center justify-between">
+        <div className="ml-2.5 text-sm font-semibold">Initiative</div>
 
         <div className="flex">
           <RoundCounter round={round} updateround={updateround} />

@@ -1,17 +1,17 @@
 import OBR from "@owlbear-rodeo/sdk";
 import {
   ROUND_CHANGE_EVENT_CHANNEL,
-  type RoundChangeData,
   SET_ROUND_CHANNEL,
+  type RoundChangeData,
   type SetRoundData,
 } from "../types/broadcastRoundProtocol";
 
 // Round change event messaging
-export function broadcastRoundChangeEventMessage(round: number | null) {
+export function broadcastRoundChangeEventMessage(roundNumber: number | null) {
   OBR.broadcast.sendMessage(
     ROUND_CHANGE_EVENT_CHANNEL,
     {
-      round,
+      roundNumber,
     } satisfies RoundChangeData,
     { destination: "ALL" },
   );
@@ -26,16 +26,18 @@ export function handleRoundChangeEventMessage(
 }
 
 // Set round event messaging
-export function broadcastSetroundMessage(round: number) {
+export function broadcastSetRoundNumberMessage(roundNumber: number) {
   OBR.broadcast.sendMessage(
     SET_ROUND_CHANNEL,
     {
-      round,
+      roundNumber,
     } satisfies SetRoundData,
     { destination: "LOCAL" },
   );
 }
-export function handleSetroundMessage(callback: (data: SetRoundData) => void) {
+export function handleSetRoundNumberMessage(
+  callback: (data: SetRoundData) => void,
+) {
   return OBR.broadcast.onMessage(SET_ROUND_CHANNEL, (event) => {
     const data = event.data as SetRoundData;
     callback(data);
