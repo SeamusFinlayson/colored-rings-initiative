@@ -6,6 +6,7 @@ import { parseItems } from "./parseItems";
 import { getSelectedGroup } from "./getSelectedGroup";
 import { updateContextMenus } from "./updateContextMenus";
 import type { AppState } from "../types/AppState";
+import { useSceneIsReady } from "./useSceneReady";
 
 export function useAppState(): [
   AppState,
@@ -16,45 +17,43 @@ export function useAppState(): [
     groupSelector: undefined,
     selectedItems: [],
   });
+  const sceneIsReady = useSceneIsReady();
   const items = useRef<Item[]>(undefined);
 
-  const checkInvalidGroupSelector = useEffectEvent(
-    (tokenGroups?: TokenGroup[]) => {
-      if (!appState.groupSelector) return;
-      if (!tokenGroups) tokenGroups = appState.tokenGroups;
-      const selectedGroup = getSelectedGroup(
-        tokenGroups,
-        appState.groupSelector,
-      );
-      if (selectedGroup?.tokens?.length !== 0) return;
-      setAppState({ ...appState, groupSelector: undefined, selectedItems: [] });
-    },
-  );
+  const checkGroupIsInvalid = useEffectEvent((tokenGroups: TokenGroup[]) => {
+    const selectedGroup = getSelectedGroup(tokenGroups, appState.groupSelector);
+    if (!selectedGroup) return true;
+    if (selectedGroup.tokens.length === 0) return true;
+    return false;
+  });
 
   useEffect(() => {
-    const updateItemsData = (newItems?: Item[]) => {
-      let newItemsData:
-        | {
-            catagories: string[];
-            tokenGroups: TokenGroup[];
-          }
-        | undefined = undefined;
-      if (newItems) {
-        items.current = newItems;
-        newItemsData = parseItems(newItems);
+    const updateItemsData = (newItems: Item[]) => {
+      items.current = newItems;
+      const { catagories, tokenGroups } = parseItems(newItems);
 
-        setAppState((prev) => ({ ...prev, ...newItemsData }));
-        updateContextMenus(newItemsData.tokenGroups, newItems);
-      }
+      updateContextMenus(tokenGroups, newItems);
 
-      checkInvalidGroupSelector(newItemsData?.tokenGroups);
+      const groupIsInvalid = checkGroupIsInvalid(tokenGroups);
+
+      setAppState((prev) => ({
+        ...prev,
+        catagories,
+        tokenGroups,
+        ...(groupIsInvalid
+          ? { groupSelector: undefined, selectedItems: [] }
+          : {}),
+      }));
     };
 
-    if (items.current) updateItemsData();
-    else OBR.scene.items.getItems().then((items) => updateItemsData(items));
+    if (!sceneIsReady) {
+      updateItemsData([]);
+    } else if (!items.current) {
+      OBR.scene.items.getItems().then(updateItemsData);
+    }
 
     return OBR.scene.items.onChange(updateItemsData);
-  }, []);
+  }, [sceneIsReady]);
 
   return [appState, setAppState];
 }

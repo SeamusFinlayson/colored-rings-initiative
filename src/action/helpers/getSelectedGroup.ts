@@ -6,22 +6,21 @@ export function getSelectedGroup(
   groupSelector: GroupSelector | undefined,
 ): TokenGroup | undefined {
   if (!groupSelector) return undefined;
-  const group = {
-    ...tokenGroups.find(
-      (group) =>
-        group.name === groupSelector.name &&
-        group.color === groupSelector.color &&
-        group.catagory === groupSelector.catagory,
-    ),
-  } as TokenGroup;
+  const group = tokenGroups.find(
+    (group) =>
+      group.name === groupSelector.name &&
+      group.color === groupSelector.color &&
+      group.catagory === groupSelector.catagory,
+  );
 
   if (!group) return undefined;
-  if (group.color) return group;
+  if (groupSelector.color) return group;
 
-  group.tokens = tokenGroups
-    .filter((group) => group.color === null)
-    .filter((group) => group.catagory === groupSelector.catagory)
-    .flatMap((group) => group.tokens);
-
-  return group;
+  return {
+    ...group,
+    tokens: tokenGroups
+      .filter((group) => group.color === null)
+      .filter((group) => group.catagory === groupSelector.catagory)
+      .flatMap((group) => group.tokens),
+  };
 }
