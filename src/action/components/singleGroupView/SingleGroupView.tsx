@@ -1,5 +1,5 @@
 import type { TokenGroup } from "../../types/TokenGroup";
-import { GroupCard } from "../GroupCard";
+import { GroupCard } from "../groupCard/GroupCard";
 import { ArrowLeftIcon, FocusIcon, XIcon } from "lucide-react";
 import OBR from "@owlbear-rodeo/sdk";
 import { focusItems } from "../../helpers/focusItems";

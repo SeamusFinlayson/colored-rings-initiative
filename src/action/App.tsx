@@ -1,10 +1,11 @@
-import { MainView } from "./components/MainView";
+import { MainView } from "./components/mainView/MainView";
 import { useAppState } from "./helpers/useAppState";
 import { getSelectedGroup } from "./helpers/getSelectedGroup";
 import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
 import { useSceneMetadata } from "./helpers/useSceneMetadata";
 import { getPluginId } from "../getPluginId";
 import { SceneDataZod } from "./types/SceneData";
+import { useCallback } from "react";
 
 export function App() {
   const [appState, setAppState] = useAppState();
@@ -21,6 +22,12 @@ export function App() {
     { round: 1 },
   );
 
+  const updateSceneData = sceneData.update;
+  const updateround = useCallback(
+    (round: number) => updateSceneData({ round }),
+    [updateSceneData],
+  );
+
   return (
     <div className="text-black dark:bg-transparent dark:text-white">
       {selectedGroup ? (
@@ -32,8 +39,8 @@ export function App() {
         />
       ) : (
         <MainView
-          roundNumber={sceneData.value.round}
-          updateRoundNumber={(number) => sceneData.update({ round: number })}
+          round={sceneData.value.round}
+          updateround={updateround}
           catagories={catagories}
           tokenGroups={tokenGroups}
           setAppState={setAppState}

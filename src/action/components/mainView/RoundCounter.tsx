@@ -1,24 +1,24 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from "../ui/popover";
+} from "../../ui/popover";
 
 export function RoundCounter({
-  roundNumber,
-  updateRoundNumber,
+  round,
+  updateround,
 }: {
-  roundNumber: number;
-  updateRoundNumber: (number: number) => void;
+  round: number;
+  updateround: (round: number) => void;
 }) {
   return (
     <Popover>
       <PopoverTrigger
-        render={<Button className="w-22">{`Round ${roundNumber}`}</Button>}
+        render={<Button className="w-22">{`Round ${round}`}</Button>}
       />
       <PopoverContent className="overflow-y-auto">
         <PopoverHeader hidden>
@@ -29,24 +29,24 @@ export function RoundCounter({
             <Button
               size={"icon"}
               variant={"transparent"}
-              disabled={roundNumber <= 1}
-              onClick={() => updateRoundNumber(roundNumber - 1)}
+              disabled={round <= 1}
+              onClick={() => updateround(round - 1)}
             >
               <MinusIcon />
             </Button>
             <Button
               className="grow"
               variant={"transparent"}
-              disabled={roundNumber <= 1}
-              onClick={() => updateRoundNumber(1)}
+              disabled={round <= 1}
+              onClick={() => updateround(1)}
             >
               Reset
             </Button>
             <Button
               size={"icon"}
               variant={"transparent"}
-              disabled={roundNumber >= 99}
-              onClick={() => updateRoundNumber(roundNumber + 1)}
+              disabled={round >= 99}
+              onClick={() => updateround(round + 1)}
             >
               <PlusIcon />
             </Button>

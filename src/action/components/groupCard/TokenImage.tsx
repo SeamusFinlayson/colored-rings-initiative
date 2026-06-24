@@ -1,4 +1,4 @@
-import { cn } from "../../cn";
+import { cn } from "../../../cn";
 
 export default function TokenImage({
   src,

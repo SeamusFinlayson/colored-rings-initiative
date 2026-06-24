@@ -1,70 +1,37 @@
 import OBR from "@owlbear-rodeo/sdk";
-import HeightMatch from "../helpers/HeightMatch";
-import { updateInitiaitiveData } from "../helpers/initiativeData";
-import type { TokenGroup } from "../types/TokenGroup";
-import { GroupCard } from "./GroupCard";
-import { RefreshCcwIcon } from "lucide-react";
-import { ScrollArea } from "../ui/scrollArea";
-import { Button } from "../ui/button";
-import type { AppState } from "../types/AppState";
+import HeightMatch from "../../helpers/HeightMatch";
+import type { TokenGroup } from "../../types/TokenGroup";
+import { GroupCard } from "../groupCard/GroupCard";
+import { ScrollArea } from "../../ui/scrollArea";
+import type { AppState } from "../../types/AppState";
 import { RoundCounter } from "./RoundCounter";
+import { ResetButton } from "./ResetButton";
 
 export function MainView({
   catagories,
   tokenGroups,
-  roundNumber,
-  updateRoundNumber,
+  round,
+  updateround,
   setAppState,
 }: {
   catagories: string[];
   tokenGroups: TokenGroup[];
-  roundNumber: number;
-  updateRoundNumber: (number: number) => void;
+  round: number;
+  updateround: (round: number) => void;
   setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
-  const turnsRemaining = tokenGroups
-    .flatMap((tokenGroup) =>
-      tokenGroup.tokens.flatMap((token) => token.data.turnsRemaining),
-    )
-    .reduce((acc, val) => acc + val, 0);
-  const totalTurns = tokenGroups
-    .flatMap((tokenGroup) =>
-      tokenGroup.tokens.flatMap((token) => token.data.totalTurns),
-    )
-    .reduce((acc, val) => acc + val, 0);
-
-  const lastTurn = turnsRemaining === 0 && totalTurns;
-
   return (
     <div className="flex h-screen flex-col">
       <div className="flex h-12 items-center justify-between font-bold">
         <div className="ml-2.5">Initiative</div>
 
         <div className="flex">
-          <RoundCounter
-            roundNumber={roundNumber}
-            updateRoundNumber={updateRoundNumber}
+          <RoundCounter round={round} updateround={updateround} />
+          <ResetButton
+            tokenGroups={tokenGroups}
+            round={round}
+            updateround={updateround}
           />
-          <Button
-            size={"icon"}
-            disabled={totalTurns === 0}
-            variant={lastTurn ? "purple" : "ghost"}
-            onClick={() => {
-              const tokens = tokenGroups.flatMap((group) => group.tokens);
-              updateInitiaitiveData(
-                tokens.map((token) => ({
-                  itemId: token.item.id,
-                  data: {
-                    hasReaction: true,
-                    turnsRemaining: token.data.totalTurns,
-                  },
-                })),
-              );
-              if (lastTurn) updateRoundNumber(roundNumber + 1);
-            }}
-          >
-            <RefreshCcwIcon />
-          </Button>
         </div>
       </div>
       <div className="mx-2.5 border-b border-white/12" />

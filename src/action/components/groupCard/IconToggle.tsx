@@ -1,5 +1,5 @@
-import { cn } from "../../cn";
-import { Button } from "../ui/button";
+import { cn } from "../../../cn";
+import { Button } from "../../ui/button";
 
 export function IconToggle({
   checkedIcon,
