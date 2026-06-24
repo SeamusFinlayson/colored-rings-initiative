@@ -69,6 +69,9 @@ function getTokenGroups(catagories: string[], tokens: Token[]) {
             const colorNumber = parseInt("0x" + color.substring(1));
             return { color, colorNumber, token };
           })
+          .sort((a, b) =>
+            a.token.item.image.url.localeCompare(b.token.item.image.url),
+          )
           .sort((a, b) => a.colorNumber - b.colorNumber)
           .sort((a) => (a.color === color ? -1 : 0))
           .map((val) => val.token);
