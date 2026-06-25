@@ -40,6 +40,7 @@ export function ResetButton({
             data: {
               hasReaction: true,
               turnsRemaining: token.data.totalTurns,
+              active: false,
             },
           })),
         );

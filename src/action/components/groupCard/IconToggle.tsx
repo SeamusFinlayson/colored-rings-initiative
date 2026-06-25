@@ -1,21 +1,22 @@
-import { cn } from "../../../cn";
 import { Button } from "../../ui/button";
 
 export function IconToggle({
   checkedIcon,
   unCheckedIcon,
-  checked,
   text,
   color = "pink",
-  onClick,
+  checked,
+  active,
   onContextMenu,
+  onClick,
   ...props
 }: {
   checkedIcon: React.ReactNode;
   unCheckedIcon: React.ReactNode;
-  checked: boolean;
   text?: string;
   color?: "yellow" | "pink";
+  checked: boolean;
+  active?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <Button
@@ -29,7 +30,10 @@ export function IconToggle({
         if (onContextMenu) onContextMenu(e);
       }}
     >
-      <div className="grid place-items-center py-1">
+      <div
+        data-rotate={active}
+        className="grid origin-[20%_80%] place-items-center py-1 transition-transform data-[rotate=true]:translate-x-0.75 data-[rotate=true]:-translate-y-0.5 data-[rotate=true]:rotate-15"
+      >
         <div
           data-hide={!checked}
           className="col-start-1 row-start-1 size-6 transition-opacity data-[hide=true]:opacity-0"
@@ -37,17 +41,17 @@ export function IconToggle({
           {checkedIcon}
         </div>
         <div
+          data-dim={!active && !checked}
           data-hide={checked}
-          className="col-start-1 row-start-1 size-6 opacity-15 transition-opacity data-[hide=true]:opacity-0"
+          className="col-start-1 row-start-1 size-6 transition-opacity data-[dim=true]:opacity-15 data-[hide=true]:opacity-0"
         >
           {unCheckedIcon}
         </div>
       </div>
       {text && (
         <div
-          className={cn("text-xs font-semibold transition-opacity", {
-            "opacity-15": !checked,
-          })}
+          data-dim={!active && !checked}
+          className="text-xs font-semibold transition-opacity data-[dim=true]:opacity-15"
         >
           {text}
         </div>

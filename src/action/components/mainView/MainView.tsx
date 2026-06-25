@@ -60,6 +60,7 @@ export function MainView({
                       color={group.color}
                       name={group.name}
                       tokens={group.tokens}
+                      tokenGroups={tokenGroups}
                       onClick={() =>
                         setAppState((prev) => ({
                           ...prev,

@@ -45,6 +45,7 @@ export function App() {
         <SingleGroupView
           selectedItems={selectedItems}
           tokenGroup={selectedGroup}
+          tokenGroups={tokenGroups}
           catagories={catagories}
           setAppState={setAppState}
         />

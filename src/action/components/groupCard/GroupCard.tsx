@@ -13,6 +13,7 @@ import {
   getColorfulSurface,
   getTintedBackground,
 } from "../../helpers/colorCssHelpers";
+import type { TokenGroup } from "../../types/TokenGroup";
 
 function getTokenMargin(count: number) {
   const itemWidth = 40;
@@ -29,6 +30,7 @@ function getTokenMargin(count: number) {
 
 export function GroupCard({
   tokens,
+  tokenGroups,
   name,
   color,
   onClick,
@@ -38,6 +40,7 @@ export function GroupCard({
   mode = "INITIATIVE",
 }: {
   tokens: Token[];
+  tokenGroups: TokenGroup[];
   name: string;
   color: string | null;
   onClick?: () => void;
@@ -60,6 +63,7 @@ export function GroupCard({
     (accum, token) => accum + token.data.totalTurns,
     0,
   );
+  const active = tokens.some((token) => token.data.active);
 
   const hasReaction = reactionsRemaining > 0;
   const hasTurn = turnsRemaining > 0;
@@ -183,33 +187,55 @@ export function GroupCard({
           checked={hasTurn}
           onClick={() => {
             const token = tokens.find((token) => token.data.turnsRemaining > 0);
-            updateInitiaitiveData(
-              token
+            updateInitiaitiveData([
+              ...(token
                 ? [
                     {
                       itemId: token.item.id,
-                      data: { turnsRemaining: token.data.turnsRemaining - 1 },
+                      data: {
+                        turnsRemaining: token.data.turnsRemaining - 1,
+                        active: true,
+                      },
                     },
                   ]
                 : tokens.map((token) => ({
                     itemId: token.item.id,
                     data: {
                       turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
+                      active: false,
                     },
-                  })),
-            );
+                  }))),
+              ...tokenGroups
+                .flatMap((group) => group.tokens)
+                .filter((token) => token.data.active)
+                .map((token) => ({
+                  itemId: token.item.id,
+                  data: { active: false },
+                })),
+            ]);
           }}
           onContextMenu={() => {
-            updateInitiaitiveData(
-              tokens.map((token) => ({
+            updateInitiaitiveData([
+              ...tokens.map((token) => ({
                 itemId: token.item.id,
-                data: { turnsRemaining: hasTurn ? 0 : token.data.totalTurns },
+                data: {
+                  turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
+                  active: hasTurn,
+                },
               })),
-            );
+              ...tokenGroups
+                .flatMap((group) => group.tokens)
+                .filter((token) => token.data.active)
+                .map((token) => ({
+                  itemId: token.item.id,
+                  data: { active: false },
+                })),
+            ]);
           }}
           text={turnText}
           checkedIcon={<ReadyFilled />}
           unCheckedIcon={<ReadyOutline />}
+          active={active}
         />
       )}
     </div>

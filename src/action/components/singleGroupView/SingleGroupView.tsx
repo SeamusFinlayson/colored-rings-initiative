@@ -21,11 +21,13 @@ import { useCallback } from "react";
 export function SingleGroupView({
   selectedItems,
   tokenGroup,
+  tokenGroups,
   catagories,
   setAppState,
 }: {
   selectedItems: string[];
   tokenGroup: TokenGroup;
+  tokenGroups: TokenGroup[];
   catagories: string[];
   setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
@@ -38,6 +40,8 @@ export function SingleGroupView({
       setAppState((prev) => ({ ...prev, selectedItems })),
     [setAppState],
   );
+
+  console.log(tokenGroups);
 
   return (
     <div className="flex h-screen flex-col">
@@ -143,6 +147,7 @@ export function SingleGroupView({
                   color={color}
                   name={token.item.name}
                   tokens={[token]}
+                  tokenGroups={tokenGroups}
                   onClick={() =>
                     setSelection(
                       selectedItems.includes(id)

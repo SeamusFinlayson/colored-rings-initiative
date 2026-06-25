@@ -6,6 +6,7 @@ export const PartialInitiativeDataZod = z.object({
   turnsRemaining: z.number().optional(),
   totalTurns: z.number().optional(),
   catagory: z.string().optional(),
+  active: z.boolean().optional(),
 });
 
 export const InitiativeDataZod = z.object({
@@ -14,6 +15,7 @@ export const InitiativeDataZod = z.object({
   turnsRemaining: z.number(),
   totalTurns: z.number(),
   catagory: z.string(),
+  active: z.boolean(),
 });
 
 export type PartialInitiativeData = z.infer<typeof PartialInitiativeDataZod>;
