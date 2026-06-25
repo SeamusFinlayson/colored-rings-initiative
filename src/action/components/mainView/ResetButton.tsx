@@ -14,12 +14,12 @@ export function ResetButton({
 }) {
   const turnsRemaining = tokenGroups
     .flatMap((tokenGroup) =>
-      tokenGroup.tokens.flatMap((token) => token.data.turnsRemaining),
+      tokenGroup.tokens.flatMap((token) => token.data.turns),
     )
     .reduce((acc, val) => acc + val, 0);
   const totalTurns = tokenGroups
     .flatMap((tokenGroup) =>
-      tokenGroup.tokens.flatMap((token) => token.data.totalTurns),
+      tokenGroup.tokens.flatMap((token) => token.data.turnsMaximum),
     )
     .reduce((acc, val) => acc + val, 0);
 
@@ -38,8 +38,8 @@ export function ResetButton({
           tokens.map((token) => ({
             itemId: token.item.id,
             data: {
-              hasReaction: true,
-              turnsRemaining: token.data.totalTurns,
+              reactions: token.data.reactionsMaximum,
+              turns: token.data.turnsMaximum,
               active: false,
             },
           })),

@@ -9,9 +9,10 @@ import OBR from "@owlbear-rodeo/sdk";
 
 const defaultInitiativeData: InitiativeData = {
   type: "RING",
-  hasReaction: true,
-  turnsRemaining: 1,
-  totalTurns: 1,
+  reactions: 1,
+  reactionsMaximum: 1,
+  turns: 1,
+  turnsMaximum: 1,
   catagory: "Adversaries",
   active: false,
 };

@@ -15,6 +15,38 @@ import { updateInitiaitiveData } from "../../helpers/initiativeData";
 import { getMutedSurface } from "../../helpers/colorCssHelpers";
 import { ThemeModeContext } from "../../helpers/ThemeModeContext";
 
+function Counter({
+  value,
+  setValue,
+  range = { min: 1, max: 99 },
+}: {
+  value: number;
+  setValue: (value: number) => void;
+  range?: { min: number; max: number };
+}) {
+  return (
+    <div className="flex gap-0.5">
+      <Button
+        size={"icon-sm"}
+        variant={"transparent"}
+        disabled={value <= range.min}
+        onClick={() => setValue(value - 1)}
+      >
+        <MinusIcon />
+      </Button>
+      <div className="grid size-8 place-items-center">{value}</div>
+      <Button
+        size={"icon-sm"}
+        variant={"transparent"}
+        disabled={value >= range.max}
+        onClick={() => setValue(value + 1)}
+      >
+        <PlusIcon />
+      </Button>
+    </div>
+  );
+}
+
 export function MoreOptionsPopover({
   tokenGroup,
   selectedItems,
@@ -27,7 +59,8 @@ export function MoreOptionsPopover({
   setSelection: (selection: string[]) => void;
 }) {
   const themeMode = useContext(ThemeModeContext);
-  const [turns, setTurns] = useState(1);
+  const [newReactionsMaximum, setNewReactionsMaximum] = useState(1);
+  const [newTurnsMaximum, setNewTurnsMaximum] = useState(1);
 
   const backgroundColor = getMutedSurface(color, themeMode);
 
@@ -46,27 +79,54 @@ export function MoreOptionsPopover({
         </PopoverHeader>
         <div className="space-y-4 p-2.5 pt-0 pb-4">
           <div>
-            <div>Set Turns</div>
+            <div>Reactions</div>
             <div className="flex justify-between">
-              <div className="flex gap-0.5">
-                <Button
-                  size={"icon-sm"}
-                  variant={"transparent"}
-                  disabled={turns <= 1}
-                  onClick={() => setTurns(turns - 1)}
-                >
-                  <MinusIcon />
-                </Button>
-                <div className="grid size-8 place-items-center">{turns}</div>
-                <Button
-                  size={"icon-sm"}
-                  variant={"transparent"}
-                  disabled={turns >= 99}
-                  onClick={() => setTurns(turns + 1)}
-                >
-                  <PlusIcon />
-                </Button>
-              </div>
+              <Counter
+                value={newReactionsMaximum}
+                setValue={setNewReactionsMaximum}
+              />
+              <PopoverClose
+                render={
+                  <Button
+                    size={"sm"}
+                    variant={"transparent"}
+                    onClick={() => {
+                      updateInitiaitiveData(
+                        tokenGroup.tokens
+                          .filter((token) =>
+                            selectedItems.includes(token.item.id),
+                          )
+                          .map((token) => {
+                            const ReactionsTaken =
+                              token.data.reactionsMaximum -
+                              token.data.reactions;
+                            let newReactions =
+                              newReactionsMaximum - ReactionsTaken;
+                            if (newReactions < 0) newReactions = 0;
+                            if (newReactions > 99) newReactions = 99;
+
+                            return {
+                              itemId: token.item.id,
+                              data: {
+                                reactions: newReactions,
+                                reactionsMaximum: newReactionsMaximum,
+                              },
+                            };
+                          }),
+                      );
+                      setSelection([]);
+                    }}
+                  >
+                    Apply
+                  </Button>
+                }
+              />
+            </div>
+          </div>
+          <div>
+            <div>Turns</div>
+            <div className="flex justify-between">
+              <Counter value={newTurnsMaximum} setValue={setNewTurnsMaximum} />
               <PopoverClose
                 render={
                   <Button
@@ -80,16 +140,16 @@ export function MoreOptionsPopover({
                           )
                           .map((token) => {
                             const turnsTaken =
-                              token.data.totalTurns - token.data.turnsRemaining;
-                            let turnsRemaining = turns - turnsTaken;
-                            if (turnsRemaining < 0) turnsRemaining = 0;
-                            if (turnsRemaining > 99) turnsRemaining = 99;
+                              token.data.turnsMaximum - token.data.turns;
+                            let newTurns = newTurnsMaximum - turnsTaken;
+                            if (newTurns < 0) newTurns = 0;
+                            if (newTurns > 99) newTurns = 99;
 
                             return {
                               itemId: token.item.id,
                               data: {
-                                totalTurns: turns,
-                                turnsRemaining,
+                                turns: newTurns,
+                                turnsMaximum: newTurnsMaximum,
                               },
                             };
                           }),

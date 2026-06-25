@@ -2,18 +2,20 @@ import z from "zod";
 
 export const PartialInitiativeDataZod = z.object({
   type: z.union([z.literal("ALWAYS"), z.literal("RING")]).optional(),
-  hasReaction: z.boolean().optional(),
-  turnsRemaining: z.number().optional(),
-  totalTurns: z.number().optional(),
+  reactions: z.number().optional(),
+  reactionsMaximum: z.number().optional(),
+  turns: z.number().optional(),
+  turnsMaximum: z.number().optional(),
   catagory: z.string().optional(),
   active: z.boolean().optional(),
 });
 
 export const InitiativeDataZod = z.object({
   type: z.union([z.literal("ALWAYS"), z.literal("RING")]),
-  hasReaction: z.boolean(),
-  turnsRemaining: z.number(),
-  totalTurns: z.number(),
+  reactions: z.number(),
+  reactionsMaximum: z.number(),
+  turns: z.number(),
+  turnsMaximum: z.number(),
   catagory: z.string(),
   active: z.boolean(),
 });

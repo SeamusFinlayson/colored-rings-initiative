@@ -55,46 +55,37 @@ export function GroupCard({
   const playerSelection = usePlayerSelection();
   const themeMode = useContext(ThemeModeContext);
 
-  const reactionsRemaining = tokens.reduce(
-    (accum, token) => accum + (token.data.hasReaction ? 1 : 0),
-    0,
-  );
-  const turnsRemaining = tokens.reduce(
-    (accum, token) => accum + token.data.turnsRemaining,
-    0,
-  );
-  const totalTurns = tokens.reduce(
-    (accum, token) => accum + token.data.totalTurns,
-    0,
-  );
-  const active = tokens.some((token) => token.data.active);
+  const [reactions, reactionsMaximum, turns, turnsMaximum, active] = [
+    tokens.reduce((accum, token) => accum + token.data.reactions, 0),
+    tokens.reduce((accum, token) => accum + token.data.reactionsMaximum, 0),
+    tokens.reduce((accum, token) => accum + token.data.turns, 0),
+    tokens.reduce((accum, token) => accum + token.data.turnsMaximum, 0),
+    tokens.some((token) => token.data.active),
+  ];
 
-  const hasReaction = reactionsRemaining > 0;
-  const hasTurn = turnsRemaining > 0;
+  const hasReaction = reactions > 0;
+  const hasTurn = turns > 0;
 
-  const highlightBar = mode === "INITIATIVE";
+  const barColor =
+    mode === "INITIATIVE"
+      ? (color ?? getTintedBackground(color, themeMode))
+      : getColorfulSurface(color, themeMode);
 
-  const barColor = highlightBar
-    ? (color ?? getTintedBackground(color, themeMode))
-    : getColorfulSurface(color, themeMode);
-
-  const backgroundColor = active
-    ? getTintedBackground(color, themeMode)
-    : getDimTintedBackground(color, themeMode);
-
-  const groupSize = tokens.length;
+  const backgroundColor =
+    active && mode === "INITIATIVE"
+      ? getTintedBackground(color, themeMode)
+      : getDimTintedBackground(color, themeMode);
 
   const reactionText =
-    groupSize > 1 ? `${reactionsRemaining}/${groupSize}` : undefined;
-  const turnText =
-    totalTurns > 1 ? `${turnsRemaining}/${totalTurns}` : undefined;
+    reactionsMaximum > 1 ? `${reactions}/${reactionsMaximum}` : undefined;
+  const turnText = turnsMaximum > 1 ? `${turns}/${turnsMaximum}` : undefined;
 
   const hiddenTokenCount = tokens.filter((token) => !token.item.visible).length;
 
   return (
     <div
       style={backgroundColor ? { backgroundColor } : {}}
-      className="isolate flex h-12 items-stretch justify-between transition-colors"
+      className="isolate flex h-12 items-stretch justify-between transition-colors duration-150"
     >
       <Button
         core={"none"}
@@ -162,23 +153,34 @@ export function GroupCard({
         <IconToggle
           checked={hasReaction}
           onClick={() => {
-            const token = tokens.find((token) => token.data.hasReaction);
-            updateInitiaitiveData(
-              token
-                ? [{ itemId: token.item.id, data: { hasReaction: false } }]
+            const token = tokens.find((token) => token.data.reactions > 0);
+            updateInitiaitiveData([
+              ...(token
+                ? [
+                    {
+                      itemId: token.item.id,
+                      data: {
+                        reactions: token.data.reactions - 1,
+                      },
+                    },
+                  ]
                 : tokens.map((token) => ({
                     itemId: token.item.id,
-                    data: { hasReaction: !hasReaction },
-                  })),
-            );
+                    data: {
+                      reactions: hasReaction ? 0 : token.data.reactionsMaximum,
+                    },
+                  }))),
+            ]);
           }}
           onContextMenu={() => {
-            updateInitiaitiveData(
-              tokens.map((token) => ({
+            updateInitiaitiveData([
+              ...tokens.map((token) => ({
                 itemId: token.item.id,
-                data: { hasReaction: !hasReaction },
+                data: {
+                  reactions: hasReaction ? 0 : token.data.reactionsMaximum,
+                },
               })),
-            );
+            ]);
           }}
           text={reactionText}
           checkedIcon={<ReactionFilled />}
@@ -190,14 +192,14 @@ export function GroupCard({
         <IconToggle
           checked={hasTurn}
           onClick={() => {
-            const token = tokens.find((token) => token.data.turnsRemaining > 0);
+            const token = tokens.find((token) => token.data.turns > 0);
             updateInitiaitiveData([
               ...(token
                 ? [
                     {
                       itemId: token.item.id,
                       data: {
-                        turnsRemaining: token.data.turnsRemaining - 1,
+                        turns: token.data.turns - 1,
                         active: true,
                       },
                     },
@@ -205,7 +207,7 @@ export function GroupCard({
                 : tokens.map((token) => ({
                     itemId: token.item.id,
                     data: {
-                      turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
+                      turns: hasTurn ? 0 : token.data.turnsMaximum,
                       active: false,
                     },
                   }))),
@@ -223,7 +225,7 @@ export function GroupCard({
               ...tokens.map((token) => ({
                 itemId: token.item.id,
                 data: {
-                  turnsRemaining: hasTurn ? 0 : token.data.totalTurns,
+                  turns: hasTurn ? 0 : token.data.turnsMaximum,
                   active: hasTurn,
                 },
               })),
