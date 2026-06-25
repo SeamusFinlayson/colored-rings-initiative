@@ -8,7 +8,7 @@ export function getTintedBackground(
   if (themeMode === "LIGHT") {
     return `hsl(from ${hex} h calc(s * 0.8) calc(l * 0.1 + 30) / 0.3)`;
   }
-  return `hsl(from ${hex} h s calc(l * 0.25 + 50) / 0.4)`;
+  return `hsl(from ${hex} h s calc(l * 0.25 + 50) / 0.3)`;
 }
 
 export function getDimTintedBackground(
@@ -19,7 +19,7 @@ export function getDimTintedBackground(
   if (themeMode === "LIGHT") {
     return `hsl(from ${hex} h s calc(l * 0.8) / 0.2)`;
   }
-  return `hsl(from ${hex} h s calc(l * 0.25) / 0.2)`;
+  return `hsl(from ${hex} h s calc(l * 0.2 + 5) / 0.2)`;
 }
 
 export function getColorfulSurface(
