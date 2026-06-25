@@ -10,6 +10,7 @@ import { usePlayerSelection } from "../../helpers/usePlayerSelection";
 import { CheckIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
+  fallbackColor,
   getColorfulSurface,
   getDimTintedBackground,
   getTintedBackground,
@@ -68,7 +69,7 @@ export function GroupCard({
 
   const barColor =
     mode === "INITIATIVE"
-      ? (color ?? getTintedBackground(color, themeMode))
+      ? (color ?? fallbackColor)
       : getColorfulSurface(color, themeMode);
 
   const backgroundColor =
@@ -97,11 +98,7 @@ export function GroupCard({
         }}
       >
         <div
-          style={
-            color === null
-              ? { borderWidth: "2px" }
-              : { backgroundColor: barColor }
-          }
+          style={{ backgroundColor: barColor }}
           data-wide={mode === "SELECTION" && selected}
           className="grid w-1.5 shrink-0 place-items-center overflow-clip border-white/60 transition-all data-[wide=true]:w-12"
         >
