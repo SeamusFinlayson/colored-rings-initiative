@@ -32,7 +32,7 @@ export function IconToggle({
     >
       <div
         data-rotate={active}
-        className="grid origin-[20%_80%] place-items-center py-1 transition-transform data-[rotate=true]:translate-x-0.75 data-[rotate=true]:-translate-y-0.5 data-[rotate=true]:rotate-15"
+        className="grid origin-[20%_80%] place-items-center py-1 transition-transform data-[rotate=true]:-translate-y-0.5 data-[rotate=true]:rotate-15"
       >
         <div
           data-hide={!checked}

@@ -11,9 +11,12 @@ import { CheckIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
   getColorfulSurface,
+  getDimTintedBackground,
   getTintedBackground,
 } from "../../helpers/colorCssHelpers";
 import type { TokenGroup } from "../../types/TokenGroup";
+import { useContext } from "react";
+import { ThemeModeContext } from "../../helpers/ThemeModeContext";
 
 function getTokenMargin(count: number) {
   const itemWidth = 40;
@@ -50,6 +53,7 @@ export function GroupCard({
   mode?: "INITIATIVE" | "SELECTION";
 }) {
   const playerSelection = usePlayerSelection();
+  const themeMode = useContext(ThemeModeContext);
 
   const reactionsRemaining = tokens.reduce(
     (accum, token) => accum + (token.data.hasReaction ? 1 : 0),
@@ -68,12 +72,15 @@ export function GroupCard({
   const hasReaction = reactionsRemaining > 0;
   const hasTurn = turnsRemaining > 0;
 
-  const highlightBar = mode === "INITIATIVE" && hasTurn;
+  const highlightBar = mode === "INITIATIVE";
 
   const barColor = highlightBar
-    ? (color ?? getTintedBackground(color))
-    : getColorfulSurface(color);
-  const backgroundColor = getTintedBackground(color);
+    ? (color ?? getTintedBackground(color, themeMode))
+    : getColorfulSurface(color, themeMode);
+
+  const backgroundColor = active
+    ? getTintedBackground(color, themeMode)
+    : getDimTintedBackground(color, themeMode);
 
   const groupSize = tokens.length;
 
@@ -136,10 +143,7 @@ export function GroupCard({
             })}
           </div>
           <div className="relative z-10000 col-start-1 row-start-1 w-full self-end justify-self-start truncate bg-linear-to-r from-white/70 via-white/70 to-white/0 px-1 dark:from-black/60 dark:via-black/20 dark:to-black/0">
-            <div
-              data-dim={!hasTurn}
-              className="max-w-full truncate text-left text-xs font-semibold text-nowrap text-ellipsis transition-opacity data-[dim=true]:opacity-50"
-            >
+            <div className="max-w-full truncate text-left text-xs font-semibold text-nowrap text-ellipsis transition-opacity">
               {name}
             </div>
           </div>

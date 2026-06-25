@@ -6,21 +6,26 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "../../ui/popover";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../../ui/button";
+import { getMutedSurface } from "../../helpers/colorCssHelpers";
+import { ThemeModeContext } from "../../helpers/ThemeModeContext";
 
 export function SwitchCatagoryPopover({
-  backgroundColor,
+  color,
   currentCatagory,
   catagories,
   onSelection,
 }: {
-  backgroundColor: string;
+  color: string | null;
   currentCatagory: string;
   catagories: string[];
   onSelection: (catagory: string) => void;
 }) {
+  const themeMode = useContext(ThemeModeContext);
   const [newCatagory, setNewCatagory] = useState("");
+
+  const backgroundColor = getMutedSurface(color, themeMode);
 
   return (
     <Popover>
@@ -53,7 +58,7 @@ export function SwitchCatagoryPopover({
           <div className="flex w-full gap-2">
             <input
               placeholder="Custom"
-              className="h-8 w-20 grow basis-0 border-2 border-white/60 px-2 transition-colors outline-none focus:border-white"
+              className="h-8 w-20 grow basis-0 border-2 border-black/60 px-2 transition-colors outline-none focus:border-black dark:border-white/60 dark:focus:border-white"
               value={newCatagory}
               onChange={(e) => setNewCatagory(e.target.value)}
             />

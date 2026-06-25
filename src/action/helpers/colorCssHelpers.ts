@@ -1,14 +1,43 @@
-export function getTintedBackground(hex: string | null) {
-  if (!hex) return "#00000020";
-  return `hsl(from ${hex} h s calc(l * 0.3) / 0.4)`;
+export function getTintedBackground(
+  hex: string | null,
+  themeMode: "DARK" | "LIGHT",
+) {
+  if (!hex) hex = "#A79EA9";
+  if (themeMode === "LIGHT") {
+    return `hsl(from ${hex} h calc(s * 0.8) calc(l * 0.1 + 30) / 0.3)`;
+  }
+  return `hsl(from ${hex} h s calc(l * 0.25 + 50) / 0.4)`;
 }
 
-export function getColorfulSurface(hex: string | null) {
-  if (!hex) hex = "grey";
+export function getDimTintedBackground(
+  hex: string | null,
+  themeMode: "DARK" | "LIGHT",
+) {
+  if (!hex) hex = "#A79EA9";
+  if (themeMode === "LIGHT") {
+    return `hsl(from ${hex} h s calc(l * 0.8) / 0.2)`;
+  }
+  return `hsl(from ${hex} h s calc(l * 0.25) / 0.2)`;
+}
+
+export function getColorfulSurface(
+  hex: string | null,
+  themeMode: "DARK" | "LIGHT",
+) {
+  if (!hex) hex = "#A79EA9";
+  if (themeMode === "LIGHT") {
+    return `hsl(from ${hex} h calc(s * 0.6) calc(l * 0.3 + 60))`;
+  }
   return `hsl(from ${hex} h calc(s * 0.8) calc(l * 0.45))`;
 }
 
-export function getMutedSurface(hex: string | null) {
-  if (!hex) hex = "grey";
+export function getMutedSurface(
+  hex: string | null,
+  themeMode: "DARK" | "LIGHT",
+) {
+  if (!hex) hex = "#A79EA9";
+  if (themeMode === "LIGHT") {
+    return `hsl(from ${hex} h calc(s * 0.4) calc(l * 0.2 + 75))`;
+  }
   return `hsl(from ${hex} h calc(s * 0.25) calc(l * 0.2 + 20))`;
 }

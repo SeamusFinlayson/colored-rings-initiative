@@ -29,9 +29,9 @@ export function ResetButton({
     <Button
       size={"icon"}
       data-dim={!lastTurn}
-      className="data-[dim=true]:opacity-50"
+      className=""
       disabled={totalTurns === 0}
-      variant={lastTurn ? "purple" : "ghost"}
+      variant={lastTurn ? "pink" : "ghost"}
       onClick={() => {
         const tokens = tokenGroups.flatMap((group) => group.tokens);
         updateInitiaitiveData(

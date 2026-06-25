@@ -12,11 +12,11 @@ import { Button } from "../../ui/button";
 import type { AppState } from "../../types/AppState";
 import {
   getColorfulSurface,
-  getMutedSurface,
-  getTintedBackground,
+  getDimTintedBackground,
 } from "../../helpers/colorCssHelpers";
 import { MoreOptionsPopover } from "./MoreOptionsPopover";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { ThemeModeContext } from "../../helpers/ThemeModeContext";
 
 export function SingleGroupView({
   selectedItems,
@@ -31,9 +31,13 @@ export function SingleGroupView({
   catagories: string[];
   setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
-  const tintedBackground = getTintedBackground(tokenGroup.color);
-  const colorfulSurface = getColorfulSurface(tokenGroup.color);
-  const mutedSurface = getMutedSurface(tokenGroup.color);
+  const themeMode = useContext(ThemeModeContext);
+
+  const dimTintedBackground = getDimTintedBackground(
+    tokenGroup.color,
+    themeMode,
+  );
+  const colorfulSurface = getColorfulSurface(tokenGroup.color, themeMode);
 
   const setSelection = useCallback(
     (selectedItems: string[]) =>
@@ -48,7 +52,7 @@ export function SingleGroupView({
       <div
         style={{
           backgroundColor:
-            selectedItems.length > 0 ? colorfulSurface : tintedBackground,
+            selectedItems.length > 0 ? colorfulSurface : dimTintedBackground,
         }}
         className="transition-colors"
       >
@@ -101,8 +105,8 @@ export function SingleGroupView({
                 <FocusIcon />
               </Button>
               <SwitchCatagoryPopover
+                color={tokenGroup.color}
                 currentCatagory={tokenGroup.catagory}
-                backgroundColor={mutedSurface}
                 catagories={catagories}
                 onSelection={(catagory) => {
                   OBR.player.select(selectedItems);
@@ -115,7 +119,7 @@ export function SingleGroupView({
                 }}
               />
               <MoreOptionsPopover
-                backgroundColor={mutedSurface}
+                color={tokenGroup.color}
                 selectedItems={selectedItems}
                 setSelection={setSelection}
                 tokenGroup={tokenGroup}
@@ -162,10 +166,13 @@ export function SingleGroupView({
               );
             })}
           </div>
-          <div className="h-4" style={{ backgroundColor: tintedBackground }} />
+          <div
+            className="h-4"
+            style={{ backgroundColor: dimTintedBackground }}
+          />
         </HeightMatch>
       </ScrollArea>
-      <div style={{ backgroundColor: tintedBackground }} className="grow" />
+      <div style={{ backgroundColor: dimTintedBackground }} className="grow" />
     </div>
   );
 }

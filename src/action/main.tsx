@@ -3,14 +3,14 @@ import { createRoot } from "react-dom/client";
 import { PluginGate } from "../PluginGate";
 import { App } from "./App";
 import "../tailwind.css";
-import { syncThemeMode } from "./helpers/syncThemeMode";
-
-syncThemeMode();
+import { ThemeModeProvider } from "./helpers/ThemeModeProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PluginGate>
-      <App />
+      <ThemeModeProvider>
+        <App />
+      </ThemeModeProvider>
     </PluginGate>
   </StrictMode>,
 );

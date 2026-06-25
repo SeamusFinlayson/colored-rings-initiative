@@ -10,21 +10,26 @@ import {
 import { Button } from "../../ui/button";
 import { removeFromInitiative } from "../../helpers/removeFromInitiative";
 import type { TokenGroup } from "../../types/TokenGroup";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { updateInitiaitiveData } from "../../helpers/initiativeData";
+import { getMutedSurface } from "../../helpers/colorCssHelpers";
+import { ThemeModeContext } from "../../helpers/ThemeModeContext";
 
 export function MoreOptionsPopover({
   tokenGroup,
   selectedItems,
-  backgroundColor,
+  color,
   setSelection,
 }: {
   tokenGroup: TokenGroup;
   selectedItems: string[];
-  backgroundColor: string;
+  color: string | null;
   setSelection: (selection: string[]) => void;
 }) {
+  const themeMode = useContext(ThemeModeContext);
   const [turns, setTurns] = useState(1);
+
+  const backgroundColor = getMutedSurface(color, themeMode);
 
   return (
     <Popover>
