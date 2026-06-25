@@ -18,6 +18,7 @@ export function getSelectedGroup(
 
   return {
     ...group,
+    name: "Individual Tokens",
     tokens: tokenGroups
       .filter((group) => group.color === null)
       .filter((group) => group.catagory === groupSelector.catagory)
