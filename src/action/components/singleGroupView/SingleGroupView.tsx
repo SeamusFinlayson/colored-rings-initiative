@@ -5,7 +5,6 @@ import OBR from "@owlbear-rodeo/sdk";
 import { focusItems } from "../../helpers/focusItems";
 import HeightMatch from "../../helpers/HeightMatch";
 import { ScrollArea } from "../../ui/scrollArea";
-
 import { switchToCatagory } from "../../helpers/switchToCatagory";
 import { SwitchCatagoryPopover } from "./SwitchCatagoryPopover";
 import { Button } from "../../ui/button";
@@ -44,8 +43,6 @@ export function SingleGroupView({
       setAppState((prev) => ({ ...prev, selectedItems })),
     [setAppState],
   );
-
-  console.log(tokenGroups);
 
   return (
     <div className="flex h-screen flex-col">
@@ -159,7 +156,6 @@ export function SingleGroupView({
                         : [...selectedItems, id],
                     )
                   }
-                  showReaction={selectedItems.length === 0}
                   mode={selectedItems.length > 0 ? "SELECTION" : "INITIATIVE"}
                   selected={selectedItems.includes(id)}
                 />

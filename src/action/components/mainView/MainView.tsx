@@ -6,6 +6,7 @@ import { ScrollArea } from "../../ui/scrollArea";
 import type { AppState } from "../../types/AppState";
 import { RoundCounter } from "./RoundCounter";
 import { ResetButton } from "./ResetButton";
+import { SettingsPopover } from "./SettingsPopover";
 
 export function MainView({
   catagories,
@@ -23,7 +24,7 @@ export function MainView({
   return (
     <div className="flex h-screen flex-col">
       <div className="flex h-12 items-center justify-between">
-        <div className="ml-2.5 text-sm font-semibold">Initiative</div>
+        <SettingsPopover />
 
         <div className="flex">
           <RoundCounter round={round} updateround={updateround} />

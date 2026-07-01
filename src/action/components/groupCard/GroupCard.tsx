@@ -18,11 +18,20 @@ import {
 import type { TokenGroup } from "../../types/TokenGroup";
 import { useContext } from "react";
 import { ThemeModeContext } from "../../helpers/ThemeModeContext";
+import { RoomDataContext } from "../../helpers/roomDataContext";
+import { updateLabels } from "../../helpers/labelItems";
+import type { PartialInitiativeData } from "../../types/InitiativeData";
+import OBR from "@owlbear-rodeo/sdk";
 
-function getTokenMargin(count: number) {
+function getTokenMargin(count: number, containerWidth: number) {
+  if (count < 4 && containerWidth < 145) return 4;
+  if (count < 5 && containerWidth > 191) return 4;
+
   const itemWidth = 40;
-  const containerWidth = 140;
-  const targetSpace = containerWidth / count;
+  const rightMargin = 4;
+
+  const availableSpace = containerWidth - rightMargin;
+  const targetSpace = availableSpace / count;
 
   const overflowMargin = itemWidth + 1 - targetSpace;
   const perItemMargin = overflowMargin / count;
@@ -32,6 +41,33 @@ function getTokenMargin(count: number) {
   return margin;
 }
 
+function processTurnUpdates(
+  updates: {
+    token: Token;
+    data: PartialInitiativeData;
+  }[],
+  onMapTurnIndicator: "NONE" | "SELECT" | "LABEL",
+) {
+  updateInitiaitiveData(
+    updates.map((val) => ({
+      itemId: val.token.item.id,
+      data: val.data,
+    })),
+  );
+  if (onMapTurnIndicator === "LABEL")
+    updateLabels(
+      updates.map((val) => ({
+        token: val.token,
+        active: !!val.data.active,
+      })),
+    );
+  if (onMapTurnIndicator === "SELECT")
+    OBR.player.select(
+      updates.filter((val) => val.data.active).map((val) => val.token.item.id),
+      true,
+    );
+}
+
 export function GroupCard({
   tokens,
   tokenGroups,
@@ -39,7 +75,6 @@ export function GroupCard({
   color,
   onClick,
   onDoubleClick,
-  showReaction = true,
   selected = false,
   mode = "INITIATIVE",
 }: {
@@ -49,12 +84,12 @@ export function GroupCard({
   color: string | null;
   onClick?: () => void;
   onDoubleClick?: () => void;
-  showReaction?: boolean;
   selected?: boolean;
   mode?: "INITIATIVE" | "SELECTION";
 }) {
   const playerSelection = usePlayerSelection();
   const themeMode = useContext(ThemeModeContext);
+  const settings = useContext(RoomDataContext);
 
   const [reactions, reactionsMaximum, turns, turnsMaximum, active] = [
     tokens.reduce((accum, token) => accum + token.data.reactions, 0),
@@ -117,8 +152,10 @@ export function GroupCard({
                   key={token.item.id}
                   style={{
                     zIndex: -index + 10000,
-                    marginRight:
-                      tokens.length < 4 ? 4 : getTokenMargin(tokens.length),
+                    marginRight: getTokenMargin(
+                      tokens.length,
+                      settings.hideReaction ? 192 : 144,
+                    ),
                   }}
                 >
                   <TokenImage
@@ -146,7 +183,7 @@ export function GroupCard({
         </div>
       </Button>
 
-      {mode === "INITIATIVE" && showReaction && (
+      {mode === "INITIATIVE" && !settings.hideReaction && (
         <IconToggle
           checked={hasReaction}
           onClick={() => {
@@ -190,11 +227,11 @@ export function GroupCard({
           checked={hasTurn}
           onClick={() => {
             const token = tokens.find((token) => token.data.turns > 0);
-            updateInitiaitiveData([
+            const updates = [
               ...(token
                 ? [
                     {
-                      itemId: token.item.id,
+                      token,
                       data: {
                         turns: token.data.turns - 1,
                         active: true,
@@ -202,7 +239,7 @@ export function GroupCard({
                     },
                   ]
                 : tokens.map((token) => ({
-                    itemId: token.item.id,
+                    token,
                     data: {
                       turns: hasTurn ? 0 : token.data.turnsMaximum,
                       active: false,
@@ -212,28 +249,30 @@ export function GroupCard({
                 .flatMap((group) => group.tokens)
                 .filter((token) => token.data.active)
                 .map((token) => ({
-                  itemId: token.item.id,
+                  token,
                   data: { active: false },
                 })),
-            ]);
+            ];
+            processTurnUpdates(updates, settings.onMapTurnIndicator);
           }}
           onContextMenu={() => {
-            updateInitiaitiveData([
+            const updates = [
               ...tokens.map((token) => ({
-                itemId: token.item.id,
+                token,
                 data: {
                   turns: hasTurn ? 0 : token.data.turnsMaximum,
-                  active: hasTurn,
+                  active: token.data.turns > 0,
                 },
               })),
               ...tokenGroups
                 .flatMap((group) => group.tokens)
                 .filter((token) => token.data.active)
                 .map((token) => ({
-                  itemId: token.item.id,
+                  token,
                   data: { active: false },
                 })),
-            ]);
+            ];
+            processTurnUpdates(updates, settings.onMapTurnIndicator);
           }}
           text={turnText}
           checkedIcon={<ReadyFilled />}

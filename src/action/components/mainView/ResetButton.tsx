@@ -2,6 +2,7 @@ import { RefreshCcwIcon } from "lucide-react";
 import { updateInitiaitiveData } from "../../helpers/initiativeData";
 import { Button } from "../../ui/button";
 import type { TokenGroup } from "../../types/TokenGroup";
+import { clearActiveLabels } from "../../helpers/labelItems";
 
 export function ResetButton({
   tokenGroups,
@@ -44,6 +45,7 @@ export function ResetButton({
             },
           })),
         );
+        clearActiveLabels();
         if (lastTurn) updateround(round + 1);
       }}
     >

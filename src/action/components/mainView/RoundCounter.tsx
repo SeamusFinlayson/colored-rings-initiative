@@ -18,7 +18,7 @@ export function RoundCounter({
   return (
     <Popover>
       <PopoverTrigger
-        render={<Button className="w-22">{`Round ${round}`}</Button>}
+        render={<Button className="min-w-20 px-0">{`Round ${round}`}</Button>}
       />
       <PopoverContent className="overflow-y-auto">
         <PopoverHeader hidden>

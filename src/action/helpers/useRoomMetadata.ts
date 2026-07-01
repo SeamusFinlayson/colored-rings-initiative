@@ -7,9 +7,9 @@ import { parseMetadata } from "./parseMetadata";
  *
  * @param key object key where data is saved
  * @param parser function that returns data with type validation
- * @returns an array containing the current value saved at the key and a function that sets the react state and the value scene metadata and a boolean indicating if data has been received
+ * @returns an array containing the current value saved at the key and a function that sets the react state and the value Room metadata and a boolean indicating if data has been received
  */
-export function useSceneMetadata<T>(
+export function useRoomMetadata<T>(
   key: string,
   parser: (value: unknown) => T,
   fallback: T,
@@ -19,20 +19,20 @@ export function useSceneMetadata<T>(
   const updateMetadata = useCallback(
     (newValue: T) => {
       setMetadata(newValue);
-      OBR.scene.setMetadata({
+      OBR.room.setMetadata({
         [key]: newValue,
       });
     },
     [key],
   );
 
-  const handleSceneMetadata = useEffectEvent((metadata: Metadata) =>
+  const handleRoomMetadata = useEffectEvent((metadata: Metadata) =>
     setMetadata(parseMetadata(metadata, key, parser, fallback)),
   );
 
   useEffect(() => {
-    OBR.scene.getMetadata().then(handleSceneMetadata, () => {});
-    return OBR.scene.onMetadataChange(handleSceneMetadata);
+    OBR.room.getMetadata().then(handleRoomMetadata, () => {});
+    return OBR.room.onMetadataChange(handleRoomMetadata);
   }, []);
 
   return { value: metadata, update: updateMetadata };

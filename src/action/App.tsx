@@ -4,14 +4,18 @@ import { getSelectedGroup } from "./helpers/getSelectedGroup";
 import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
 import { useSceneMetadata } from "./helpers/useSceneMetadata";
 import { getPluginId } from "../getPluginId";
-import { SceneDataZod } from "./types/SceneData";
-import { useCallback, useEffect } from "react";
+import { PartialSceneDataZod, type SceneData } from "./types/SceneData";
+import { useCallback, useContext, useEffect } from "react";
 import {
   broadcastRoundChangeEventMessage,
   handleSetRoundNumberMessage,
 } from "./helpers/broadcastRoundImplementation";
+import { defaultSceneData } from "./helpers/sceneData";
+import { RoomDataContext } from "./helpers/roomDataContext";
 
 export function App() {
+  const settings = useContext(RoomDataContext);
+
   const [appState, setAppState] = useAppState();
   const catagories = appState.catagories;
   const tokenGroups = appState.tokenGroups;
@@ -22,17 +26,23 @@ export function App() {
 
   const sceneData = useSceneMetadata(
     getPluginId("Initiative"),
-    SceneDataZod.parse,
-    { round: 1 },
+    (value) =>
+      ({
+        ...defaultSceneData,
+        ...PartialSceneDataZod.parse(value),
+      }) satisfies SceneData,
+    defaultSceneData,
   );
 
   const updateSceneData = sceneData.update;
   const updateRound = useCallback(
     (round: number) => {
       updateSceneData({ round });
-      broadcastRoundChangeEventMessage(round);
+      if (!settings.disableRoundBroadcasting) {
+        broadcastRoundChangeEventMessage(round);
+      }
     },
-    [updateSceneData],
+    [updateSceneData, settings.disableRoundBroadcasting],
   );
 
   useEffect(() => {

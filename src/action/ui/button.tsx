@@ -12,6 +12,8 @@ const buttonVariants = cva("", {
       ghost: "hover:bg-black/20 dark:hover:bg-white/20",
       transparent:
         "bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20",
+      active:
+        "bg-black text-white hover:bg-black dark:bg-white dark:text-black dark:hover:bg-white",
       pink: "text-pink-800 hover:bg-pink-400/20 dark:text-pink-200 dark:hover:bg-pink-300/20",
       yellow:
         "text-yellow-800 hover:bg-yellow-400/20 dark:text-yellow-100 dark:hover:bg-yellow-300/20",
