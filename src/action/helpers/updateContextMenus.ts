@@ -41,7 +41,18 @@ export function updateContextMenus(tokenGroups: TokenGroup[], items: Item[]) {
       updateInitiaitiveData(
         context.items.map((item) => ({
           itemId: item.id,
-          data: { type: "ALWAYS" },
+          data: {
+            type: "ALWAYS",
+            ...((
+              item.metadata["com.draw-steel-stat-bubbles/metadata"] as
+                | {
+                    type?: string;
+                  }
+                | undefined
+            )?.type === "HERO"
+              ? { catagory: "Party" }
+              : {}),
+          },
         })),
       ),
   });
