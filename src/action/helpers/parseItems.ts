@@ -23,7 +23,7 @@ function getRings(items: Item[]) {
 function getTokens(items: Item[], rings: Shape[]) {
   return items
     .filter((item) => isImage(item))
-    .filter((item) => item.layer === "CHARACTER")
+    .filter((item) => item.layer === "CHARACTER" || item.layer === "MOUNT")
     .map((item) => ({ item, data: getInitiativeData(item) }))
     .filter(
       (val) =>

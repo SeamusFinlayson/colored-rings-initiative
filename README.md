@@ -1,6 +1,6 @@
 # Colored Rings
 
-Add simple colored status rings to any character
+Add simple colored status rings to any character or mount
 
 ![Interface](./docs/header.jpg)
 

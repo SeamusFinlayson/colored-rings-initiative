@@ -17,8 +17,9 @@ OBR.onReady(() => {
         label: "Colored Rings",
         filter: {
           every: [
-            { key: "type", value: "IMAGE" },
+            { key: "layer", value: "MOUNT", coordinator: "||" },
             { key: "layer", value: "CHARACTER" },
+            { key: "type", value: "IMAGE" },
           ],
           permissions: ["UPDATE"],
         },

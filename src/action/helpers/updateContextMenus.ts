@@ -12,7 +12,7 @@ export function updateContextMenus(tokenGroups: TokenGroup[], items: Item[]) {
 
   const allItemIds = items
     .filter((item) => isImage(item))
-    .filter((item) => item.layer === "CHARACTER")
+    .filter((item) => item.layer === "CHARACTER" || item.layer === "MOUNT")
     .map((item) => item.id);
 
   const untrackedItemIds = setDifference(allItemIds, trackedItemIds);
@@ -25,8 +25,9 @@ export function updateContextMenus(tokenGroups: TokenGroup[], items: Item[]) {
         label: "Add Initiative",
         filter: {
           every: [
-            { key: "type", value: "IMAGE" },
+            { key: "layer", value: "MOUNT", coordinator: "||" },
             { key: "layer", value: "CHARACTER" },
+            { key: "type", value: "IMAGE" },
             ...trackedItemIds.map(
               (id) =>
                 ({ key: "id", operator: "!=", value: id }) satisfies KeyFilter,
@@ -53,8 +54,9 @@ export function updateContextMenus(tokenGroups: TokenGroup[], items: Item[]) {
         label: "Remove Initiative",
         filter: {
           some: [
-            { key: "type", value: "IMAGE" },
+            { key: "layer", value: "MOUNT", coordinator: "||" },
             { key: "layer", value: "CHARACTER" },
+            { key: "type", value: "IMAGE" },
             ...untrackedItemIds.map(
               (id) =>
                 ({ key: "id", operator: "!=", value: id }) satisfies KeyFilter,
