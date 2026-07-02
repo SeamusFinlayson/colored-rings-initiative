@@ -53,7 +53,7 @@ export function SettingsPopover() {
           <div className="flex">
             <Toggle
               text="Disabled"
-              active={roomData.disableRoundBroadcasting === false}
+              active={roomData.disableRoundBroadcasting === true}
               onClick={() =>
                 setRoomData({
                   ...roomData,
@@ -63,7 +63,7 @@ export function SettingsPopover() {
             />
             <Toggle
               text="Enabled"
-              active={roomData.disableRoundBroadcasting === true}
+              active={roomData.disableRoundBroadcasting === false}
               onClick={() =>
                 setRoomData({
                   ...roomData,
@@ -76,7 +76,7 @@ export function SettingsPopover() {
           <div className="flex">
             <Toggle
               text="Disabled"
-              active={roomData.hideReaction === false}
+              active={roomData.hideReaction === true}
               onClick={() =>
                 setRoomData({
                   ...roomData,
@@ -86,7 +86,7 @@ export function SettingsPopover() {
             />
             <Toggle
               text="Enabled"
-              active={roomData.hideReaction === true}
+              active={roomData.hideReaction === false}
               onClick={() =>
                 setRoomData({
                   ...roomData,
