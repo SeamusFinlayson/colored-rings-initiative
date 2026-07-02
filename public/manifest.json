@@ -2,7 +2,7 @@
   "name": "Rings Initiative",
   "version": "1.0.0",
   "manifest_version": 1,
-  "author": "Owlbear Rodeo",
+  "author": "Seamus Finlayson",
   "homepage_url": "https://extensions.owlbear.rodeo/colored-rings",
   "action": {
     "title": "Initiative",
@@ -13,5 +13,5 @@
   },
   "icon": "/logo.png",
   "background_url": "/background.html",
-  "description": "Add simple colored status rings to any character or mount"
+  "description": "Use colored rings create initiative groups."
 }
