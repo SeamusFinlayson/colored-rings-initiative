@@ -14,6 +14,7 @@ import { useContext, useState } from "react";
 import { updateInitiaitiveData } from "../../helpers/initiativeData";
 import { getMutedSurface } from "../../helpers/colorCssHelpers";
 import { ThemeModeContext } from "../../helpers/ThemeModeContext";
+import { RoomDataContext } from "../../helpers/roomDataContext";
 
 function Counter({
   value,
@@ -58,7 +59,9 @@ export function MoreOptionsPopover({
   color: string | null;
   setSelection: (selection: string[]) => void;
 }) {
+  const roomData = useContext(RoomDataContext);
   const themeMode = useContext(ThemeModeContext);
+
   const [newReactionsMaximum, setNewReactionsMaximum] = useState(1);
   const [newTurnsMaximum, setNewTurnsMaximum] = useState(1);
 
@@ -78,51 +81,53 @@ export function MoreOptionsPopover({
           <PopoverTitle>Options</PopoverTitle>
         </PopoverHeader>
         <div className="space-y-4 p-2.5 pt-0 pb-4">
-          <div>
-            <div>Reactions</div>
-            <div className="flex justify-between">
-              <Counter
-                value={newReactionsMaximum}
-                setValue={setNewReactionsMaximum}
-              />
-              <PopoverClose
-                render={
-                  <Button
-                    size={"sm"}
-                    variant={"transparent"}
-                    onClick={() => {
-                      updateInitiaitiveData(
-                        tokenGroup.tokens
-                          .filter((token) =>
-                            selectedItems.includes(token.item.id),
-                          )
-                          .map((token) => {
-                            const ReactionsTaken =
-                              token.data.reactionsMaximum -
-                              token.data.reactions;
-                            let newReactions =
-                              newReactionsMaximum - ReactionsTaken;
-                            if (newReactions < 0) newReactions = 0;
-                            if (newReactions > 99) newReactions = 99;
+          {!roomData.hideReaction && (
+            <div>
+              <div>Triggered Actions</div>
+              <div className="flex justify-between">
+                <Counter
+                  value={newReactionsMaximum}
+                  setValue={setNewReactionsMaximum}
+                />
+                <PopoverClose
+                  render={
+                    <Button
+                      size={"sm"}
+                      variant={"transparent"}
+                      onClick={() => {
+                        updateInitiaitiveData(
+                          tokenGroup.tokens
+                            .filter((token) =>
+                              selectedItems.includes(token.item.id),
+                            )
+                            .map((token) => {
+                              const ReactionsTaken =
+                                token.data.reactionsMaximum -
+                                token.data.reactions;
+                              let newReactions =
+                                newReactionsMaximum - ReactionsTaken;
+                              if (newReactions < 0) newReactions = 0;
+                              if (newReactions > 99) newReactions = 99;
 
-                            return {
-                              itemId: token.item.id,
-                              data: {
-                                reactions: newReactions,
-                                reactionsMaximum: newReactionsMaximum,
-                              },
-                            };
-                          }),
-                      );
-                      setSelection([]);
-                    }}
-                  >
-                    Apply
-                  </Button>
-                }
-              />
+                              return {
+                                itemId: token.item.id,
+                                data: {
+                                  reactions: newReactions,
+                                  reactionsMaximum: newReactionsMaximum,
+                                },
+                              };
+                            }),
+                        );
+                        setSelection([]);
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  }
+                />
+              </div>
             </div>
-          </div>
+          )}
           <div>
             <div>Turns</div>
             <div className="flex justify-between">
