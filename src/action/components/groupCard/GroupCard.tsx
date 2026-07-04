@@ -2,8 +2,8 @@ import { ReactionFilled } from "../../icons/ReactionFilled";
 import { ReactionOutline } from "../../icons/ReactionOutline";
 import { ReadyFilled } from "../../icons/ReadyFilled";
 import { ReadyOutline } from "../../icons/ReadyOutline";
-import TokenImage from "./TokenImage";
-import { IconToggle } from "./IconToggle";
+import TokenImage from "./components/TokenImage";
+import { IconToggle } from "./components/IconToggle";
 import { updateInitiaitiveData } from "../../helpers/initiativeData";
 import type { Token } from "../../types/Token";
 import { usePlayerSelection } from "../../helpers/usePlayerSelection";
@@ -19,54 +19,8 @@ import type { TokenGroup } from "../../types/TokenGroup";
 import { useContext } from "react";
 import { ThemeModeContext } from "../../helpers/ThemeModeContext";
 import { RoomDataContext } from "../../helpers/roomDataContext";
-import { updateLabels } from "../../helpers/labelItems";
-import type { PartialInitiativeData } from "../../types/InitiativeData";
-import OBR from "@owlbear-rodeo/sdk";
-
-function getTokenMargin(count: number, containerWidth: number) {
-  if (count < 4 && containerWidth < 145) return 4;
-  if (count < 5 && containerWidth > 191) return 4;
-
-  const itemWidth = 40;
-  const rightMargin = 4;
-
-  const availableSpace = containerWidth - rightMargin;
-  const targetSpace = availableSpace / count;
-
-  const overflowMargin = itemWidth + 1 - targetSpace;
-  const perItemMargin = overflowMargin / count;
-
-  const margin = targetSpace - perItemMargin - itemWidth;
-
-  return margin;
-}
-
-function processTurnUpdates(
-  updates: {
-    token: Token;
-    data: PartialInitiativeData;
-  }[],
-  onMapTurnIndicator: "NONE" | "SELECT" | "LABEL",
-) {
-  updateInitiaitiveData(
-    updates.map((val) => ({
-      itemId: val.token.item.id,
-      data: val.data,
-    })),
-  );
-  if (onMapTurnIndicator === "LABEL")
-    updateLabels(
-      updates.map((val) => ({
-        token: val.token,
-        active: !!val.data.active,
-      })),
-    );
-  if (onMapTurnIndicator === "SELECT")
-    OBR.player.select(
-      updates.filter((val) => val.data.active).map((val) => val.token.item.id),
-      true,
-    );
-}
+import { getTokenMargin } from "./getTokenMargin";
+import { processTurnUpdates } from "../../helpers/processTurnUpdates";
 
 export function GroupCard({
   tokens,
