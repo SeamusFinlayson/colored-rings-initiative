@@ -24,7 +24,7 @@ function Toggle({
   return (
     <Button
       className="grow"
-      variant={active ? "active" : "ghost"}
+      variant={active ? "active" : "transparent"}
       size={"sm"}
       onClick={onClick}
     >
@@ -48,9 +48,9 @@ export function SettingsPopover() {
         <PopoverHeader>
           <PopoverTitle>Settings</PopoverTitle>
         </PopoverHeader>
-        <div className="space-y-2">
-          <div className="pl-2.5">Broadcast Round</div>
-          <div className="flex">
+        <div className="space-y-2 p-2.5 pt-0">
+          <div>Broadcast Round</div>
+          <div className="flex gap-1">
             <Toggle
               text="Disabled"
               active={roomData.disableRoundBroadcasting === true}
@@ -72,8 +72,8 @@ export function SettingsPopover() {
               }
             />
           </div>
-          <div className="pl-2.5">Triggered Actions</div>
-          <div className="flex">
+          <div>Triggered Actions</div>
+          <div className="flex gap-1">
             <Toggle
               text="Disabled"
               active={roomData.hideReaction === true}
@@ -95,8 +95,8 @@ export function SettingsPopover() {
               }
             />
           </div>
-          <div className="pl-2.5">Indicator</div>
-          <div className="flex">
+          <div>Indicator</div>
+          <div className="flex gap-1">
             <Toggle
               text="None"
               active={roomData.onMapTurnIndicator === "NONE"}
