@@ -41,15 +41,20 @@ export function SwitchCatagoryPopover({
           <PopoverTitle>Move to Catagory</PopoverTitle>
         </PopoverHeader>
         <div className="space-y-2.5 p-2.5 pt-0">
-          <div className="flex flex-wrap gap-0.5">
+          <div className="flex flex-wrap gap-1">
             {[...catagories].map((catagory) => (
               <Button
-                variant={"transparent"}
+                variant={
+                  catagory === currentCatagory ? "active" : "transparent"
+                }
                 key={catagory}
-                disabled={catagory === currentCatagory}
                 size={"sm"}
                 className="block"
-                onClick={() => onSelection(catagory)}
+                onClick={
+                  catagory === currentCatagory
+                    ? () => {}
+                    : () => onSelection(catagory)
+                }
               >
                 {catagory}
               </Button>

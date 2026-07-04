@@ -21,10 +21,10 @@ export function RoundCounter({
         render={<Button className="min-w-20 px-0">{`Round ${round}`}</Button>}
       />
       <PopoverContent className="overflow-y-auto">
-        <PopoverHeader hidden>
+        <PopoverHeader>
           <PopoverTitle>Round</PopoverTitle>
         </PopoverHeader>
-        <div className="space-y-2.5 p-2.5">
+        <div className="space-y-2.5 p-2.5 pt-0">
           <div className="flex gap-1">
             <Button
               size={"icon"}

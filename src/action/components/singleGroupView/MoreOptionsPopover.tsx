@@ -78,12 +78,12 @@ export function MoreOptionsPopover({
       />
       <PopoverContent style={{ backgroundColor }} className="overflow-y-auto">
         <PopoverHeader>
-          <PopoverTitle>Options</PopoverTitle>
+          <PopoverTitle>Token Options</PopoverTitle>
         </PopoverHeader>
-        <div className="space-y-4 p-2.5 pt-0 pb-4">
+        <div className="space-y-2.5 p-2.5 pt-0">
           {!roomData.hideReaction && (
-            <div>
-              <div>Triggered Actions</div>
+            <>
+              <div className="mb-0.5">Triggered Actions</div>
               <div className="flex justify-between">
                 <Counter
                   value={newReactionsMaximum}
@@ -126,47 +126,45 @@ export function MoreOptionsPopover({
                   }
                 />
               </div>
-            </div>
+            </>
           )}
-          <div>
-            <div>Turns</div>
-            <div className="flex justify-between">
-              <Counter value={newTurnsMaximum} setValue={setNewTurnsMaximum} />
-              <PopoverClose
-                render={
-                  <Button
-                    size={"sm"}
-                    variant={"transparent"}
-                    onClick={() => {
-                      updateInitiaitiveData(
-                        tokenGroup.tokens
-                          .filter((token) =>
-                            selectedItems.includes(token.item.id),
-                          )
-                          .map((token) => {
-                            const turnsTaken =
-                              token.data.turnsMaximum - token.data.turns;
-                            let newTurns = newTurnsMaximum - turnsTaken;
-                            if (newTurns < 0) newTurns = 0;
-                            if (newTurns > 99) newTurns = 99;
+          <div className="mb-0.5">Turns</div>
+          <div className="flex justify-between">
+            <Counter value={newTurnsMaximum} setValue={setNewTurnsMaximum} />
+            <PopoverClose
+              render={
+                <Button
+                  size={"sm"}
+                  variant={"transparent"}
+                  onClick={() => {
+                    updateInitiaitiveData(
+                      tokenGroup.tokens
+                        .filter((token) =>
+                          selectedItems.includes(token.item.id),
+                        )
+                        .map((token) => {
+                          const turnsTaken =
+                            token.data.turnsMaximum - token.data.turns;
+                          let newTurns = newTurnsMaximum - turnsTaken;
+                          if (newTurns < 0) newTurns = 0;
+                          if (newTurns > 99) newTurns = 99;
 
-                            return {
-                              itemId: token.item.id,
-                              data: {
-                                turns: newTurns,
-                                turnsMaximum: newTurnsMaximum,
-                              },
-                            };
-                          }),
-                      );
-                      setSelection([]);
-                    }}
-                  >
-                    Apply
-                  </Button>
-                }
-              />
-            </div>
+                          return {
+                            itemId: token.item.id,
+                            data: {
+                              turns: newTurns,
+                              turnsMaximum: newTurnsMaximum,
+                            },
+                          };
+                        }),
+                    );
+                    setSelection([]);
+                  }}
+                >
+                  Apply
+                </Button>
+              }
+            />
           </div>
           <Button
             variant={"transparent"}

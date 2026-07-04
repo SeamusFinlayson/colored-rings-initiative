@@ -48,54 +48,38 @@ export function SettingsPopover() {
         <PopoverHeader>
           <PopoverTitle>Settings</PopoverTitle>
         </PopoverHeader>
-        <div className="space-y-2 p-2.5 pt-0">
-          <div>Broadcast Round</div>
+        <div className="space-y-2.5 p-2.5 pt-0">
+          <div className="mb-0.5">Broadcast Round</div>
           <div className="flex gap-1">
             <Toggle
               text="Disabled"
               active={roomData.disableRoundBroadcasting === true}
               onClick={() =>
-                setRoomData({
-                  ...roomData,
-                  disableRoundBroadcasting: !roomData.disableRoundBroadcasting,
-                })
+                setRoomData({ ...roomData, disableRoundBroadcasting: true })
               }
             />
             <Toggle
               text="Enabled"
               active={roomData.disableRoundBroadcasting === false}
               onClick={() =>
-                setRoomData({
-                  ...roomData,
-                  disableRoundBroadcasting: !roomData.disableRoundBroadcasting,
-                })
+                setRoomData({ ...roomData, disableRoundBroadcasting: false })
               }
             />
           </div>
-          <div>Triggered Actions</div>
+          <div className="mb-0.5">Triggered Actions</div>
           <div className="flex gap-1">
             <Toggle
               text="Disabled"
               active={roomData.hideReaction === true}
-              onClick={() =>
-                setRoomData({
-                  ...roomData,
-                  hideReaction: !roomData.hideReaction,
-                })
-              }
+              onClick={() => setRoomData({ ...roomData, hideReaction: true })}
             />
             <Toggle
               text="Enabled"
               active={roomData.hideReaction === false}
-              onClick={() =>
-                setRoomData({
-                  ...roomData,
-                  hideReaction: !roomData.hideReaction,
-                })
-              }
+              onClick={() => setRoomData({ ...roomData, hideReaction: false })}
             />
           </div>
-          <div>Indicator</div>
+          <div className="mb-0.5">Indicator</div>
           <div className="flex gap-1">
             <Toggle
               text="None"
