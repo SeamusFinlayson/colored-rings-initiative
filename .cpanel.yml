@@ -1,5 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/mzptu907/public_html/rings-initiative
-    - /bin/cp -R images $DEPLOYPATH
