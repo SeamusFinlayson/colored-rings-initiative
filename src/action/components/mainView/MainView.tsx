@@ -1,26 +1,29 @@
 import OBR from "@owlbear-rodeo/sdk";
 import HeightMatch from "../../helpers/HeightMatch";
-import type { TokenGroup } from "../../types/TokenGroup";
 import { GroupCard } from "../groupCard/GroupCard";
 import { ScrollArea } from "../../ui/scrollArea";
-import type { AppState } from "../../types/AppState";
 import { RoundCounter } from "./RoundCounter";
 import { ResetButton } from "./ResetButton";
 import { SettingsPopover } from "./SettingsPopover";
+import { useContext } from "react";
+import {
+  InitiativeStateContext,
+  InitiativeStateDispatchContext,
+} from "../../helpers/initiativeState/inititativeStateContext";
 
 export function MainView({
-  catagories,
-  tokenGroups,
   round,
   updateround,
-  setAppState,
 }: {
-  catagories: string[];
-  tokenGroups: TokenGroup[];
   round: number;
   updateround: (round: number) => void;
-  setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }) {
+  const initiativeState = useContext(InitiativeStateContext);
+  const initiativeStateDispatch = useContext(InitiativeStateDispatchContext);
+
+  const tokenGroups = initiativeState.tokenGroups;
+  const catagories = initiativeState.catagories;
+
   return (
     <div className="flex h-screen flex-col">
       <div className="flex h-12 items-center justify-between">
@@ -63,28 +66,31 @@ export function MainView({
                       tokens={group.tokens}
                       tokenGroups={tokenGroups}
                       onClick={() =>
-                        setAppState((prev) => ({
-                          ...prev,
+                        initiativeStateDispatch({
+                          type: "setGroupSelector",
                           groupSelector: {
                             color: group.color,
                             catagory: group.catagory,
                             name: group.name,
                           },
-                        }))
+                        })
                       }
-                      onDoubleClick={() =>
-                        setAppState((prev) => ({
-                          ...prev,
+                      onDoubleClick={() => {
+                        initiativeStateDispatch({
+                          type: "setGroupSelector",
+                          groupSelector: {
+                            color: group.color,
+                            catagory: group.catagory,
+                            name: group.name,
+                          },
+                        });
+                        initiativeStateDispatch({
+                          type: "setSelectedItems",
                           selectedItems: group.tokens.map(
                             (token) => token.item.id,
                           ),
-                          groupSelector: {
-                            color: group.color,
-                            catagory: group.catagory,
-                            name: group.name,
-                          },
-                        }))
-                      }
+                        });
+                      }}
                     />
                   ))}
               </div>

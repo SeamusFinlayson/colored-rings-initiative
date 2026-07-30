@@ -1,6 +1,6 @@
-import { getPluginId } from "../../getPluginId";
-import { PartialRoomDataZod, type RoomData } from "../types/RoomData";
-import { defaultRoomData } from "./roomData";
+import { getPluginId } from "../../../getPluginId";
+import { PartialRoomDataZod, type RoomData } from "../../types/RoomData";
+import { defaultRoomData } from "./defaultRoomData";
 import { RoomDataContext, SetRoomDataContext } from "./roomDataContext";
 import { useRoomMetadata } from "./useRoomMetadata";
 

@@ -8,28 +8,26 @@ import { ScrollArea } from "../../ui/scrollArea";
 import { switchToCatagory } from "../../helpers/switchToCatagory";
 import { SwitchCatagoryPopover } from "./SwitchCatagoryPopover";
 import { Button } from "../../ui/button";
-import type { AppState } from "../../types/AppState";
 import {
   getColorfulSurface,
   getDimTintedBackground,
 } from "../../helpers/colorCssHelpers";
 import { MoreOptionsPopover } from "./MoreOptionsPopover";
-import { useCallback, useContext } from "react";
-import { ThemeModeContext } from "../../helpers/ThemeModeContext";
+import { useContext } from "react";
+import { ThemeModeContext } from "../../helpers/themeModeContext";
+import {
+  InitiativeStateContext,
+  InitiativeStateDispatchContext,
+} from "../../helpers/initiativeState/inititativeStateContext";
 
-export function SingleGroupView({
-  selectedItems,
-  tokenGroup,
-  tokenGroups,
-  catagories,
-  setAppState,
-}: {
-  selectedItems: string[];
-  tokenGroup: TokenGroup;
-  tokenGroups: TokenGroup[];
-  catagories: string[];
-  setAppState: React.Dispatch<React.SetStateAction<AppState>>;
-}) {
+export function SingleGroupView({ tokenGroup }: { tokenGroup: TokenGroup }) {
+  const initiativeState = useContext(InitiativeStateContext);
+  const initiativeStateDispatch = useContext(InitiativeStateDispatchContext);
+
+  const selectedItems = initiativeState.selectedItems;
+  const tokenGroups = initiativeState.tokenGroups;
+  const catagories = initiativeState.catagories;
+
   const themeMode = useContext(ThemeModeContext);
 
   const dimTintedBackground = getDimTintedBackground(
@@ -37,12 +35,6 @@ export function SingleGroupView({
     themeMode,
   );
   const colorfulSurface = getColorfulSurface(tokenGroup.color, themeMode);
-
-  const setSelection = useCallback(
-    (selectedItems: string[]) =>
-      setAppState((prev) => ({ ...prev, selectedItems })),
-    [setAppState],
-  );
 
   return (
     <div className="flex h-screen flex-col">
@@ -56,13 +48,16 @@ export function SingleGroupView({
         <div className="flex h-12 items-stretch font-semibold">
           <Button
             size={"icon"}
-            onClick={() =>
-              setAppState((prev) => ({
-                ...prev,
+            onClick={() => {
+              initiativeStateDispatch({
+                type: "setGroupSelector",
                 groupSelector: undefined,
+              });
+              initiativeStateDispatch({
+                type: "setSelectedItems",
                 selectedItems: [],
-              }))
-            }
+              });
+            }}
           >
             <ArrowLeftIcon />
           </Button>
@@ -72,7 +67,12 @@ export function SingleGroupView({
               title="Select All"
               className="shrink grow justify-start text-left"
               onClick={() =>
-                setSelection(tokenGroup.tokens.map((token) => token.item.id))
+                initiativeStateDispatch({
+                  type: "setSelectedItems",
+                  selectedItems: tokenGroup.tokens.map(
+                    (token) => token.item.id,
+                  ),
+                })
               }
             >
               {tokenGroup.name}
@@ -83,7 +83,12 @@ export function SingleGroupView({
                 title="Deselect All"
                 size={"icon"}
                 className="flex h-12 grow items-center justify-center gap-1 hover:bg-white/20"
-                onClick={() => setSelection([])}
+                onClick={() =>
+                  initiativeStateDispatch({
+                    type: "setSelectedItems",
+                    selectedItems: [],
+                  })
+                }
               >
                 <XIcon />
                 <div className="grid min-w-3 place-items-center font-bold">
@@ -96,7 +101,10 @@ export function SingleGroupView({
                 onClick={() => {
                   OBR.player.select(selectedItems);
                   focusItems(selectedItems);
-                  setSelection([]);
+                  initiativeStateDispatch({
+                    type: "setSelectedItems",
+                    selectedItems: [],
+                  });
                 }}
               >
                 <FocusIcon />
@@ -108,17 +116,25 @@ export function SingleGroupView({
                 onSelection={(catagory) => {
                   OBR.player.select(selectedItems);
                   switchToCatagory(catagory, selectedItems);
-                  setAppState((prev) => ({
-                    ...prev,
-                    selectedItems: [],
+                  initiativeStateDispatch({
+                    type: "setGroupSelector",
                     groupSelector: undefined,
-                  }));
+                  });
+                  initiativeStateDispatch({
+                    type: "setSelectedItems",
+                    selectedItems: [],
+                  });
                 }}
               />
               <MoreOptionsPopover
                 color={tokenGroup.color}
                 selectedItems={selectedItems}
-                setSelection={setSelection}
+                setSelection={(selectedItems) =>
+                  initiativeStateDispatch({
+                    type: "setSelectedItems",
+                    selectedItems,
+                  })
+                }
                 tokenGroup={tokenGroup}
               />
             </>
@@ -150,11 +166,12 @@ export function SingleGroupView({
                   tokens={[token]}
                   tokenGroups={tokenGroups}
                   onClick={() =>
-                    setSelection(
-                      selectedItems.includes(id)
+                    initiativeStateDispatch({
+                      type: "setSelectedItems",
+                      selectedItems: selectedItems.includes(id)
                         ? selectedItems.filter((val) => val !== id)
                         : [...selectedItems, id],
-                    )
+                    })
                   }
                   mode={selectedItems.length > 0 ? "SELECTION" : "INITIATIVE"}
                   selected={selectedItems.includes(id)}
