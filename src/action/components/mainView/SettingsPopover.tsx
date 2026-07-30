@@ -11,6 +11,7 @@ import {
   RoomDataContext,
   SetRoomDataContext,
 } from "../../helpers/roomData/roomDataContext";
+import { InitiativeStateContext } from "../../helpers/initiativeState/inititativeStateContext";
 
 function Toggle({
   text,
@@ -36,6 +37,7 @@ function Toggle({
 export function SettingsPopover() {
   const roomData = useContext(RoomDataContext);
   const setRoomData = useContext(SetRoomDataContext);
+  const playerRole = useContext(InitiativeStateContext).playerRole;
 
   return (
     <Popover>
@@ -46,9 +48,15 @@ export function SettingsPopover() {
       />
       <PopoverContent className="overflow-y-auto">
         <PopoverHeader>
-          <PopoverTitle>Settings</PopoverTitle>
+          <PopoverTitle>
+            {"Settings" +
+              (playerRole === "PLAYER" ? " (GM Access Required)" : "")}
+          </PopoverTitle>
         </PopoverHeader>
-        <div className="space-y-2.5 p-2.5 pt-0">
+        <div
+          inert={playerRole === "PLAYER"}
+          className="space-y-2.5 p-2.5 pt-0 inert:opacity-50"
+        >
           <div className="mb-0.5">Broadcast Round</div>
           <div className="flex gap-1">
             <Toggle
