@@ -6,9 +6,6 @@ import { parseItems } from "../parseItems";
 import { getSelectedGroup } from "../getSelectedGroup";
 import { updateContextMenus } from "../updateContextMenus";
 import type { GroupSelector } from "../../types/GroupSelector";
-import { processTurnUpdates } from "../processTurnUpdates";
-import { PartialInitiativeDataZod } from "../../types/InitiativeData";
-import { INITIATIVE_METADATA_KEY } from "../initiativeData";
 import type { InitiativeState } from "./InitiativeState";
 import { inititalInitiatveState } from "./initiailInitiativeState";
 import type { ReducerAction } from "./ReducerAction";
@@ -89,24 +86,6 @@ function reducer(
     }
     case "setGroupSelector": {
       return { ...state, groupSelector: action.groupSelector };
-    }
-    case "updateTokens": {
-      processTurnUpdates(action.updates, action.onMapTurnIndicator);
-      const items = state.items.map((item) => {
-        const update = action.updates.find(
-          (update) => update.token.item.id === item.id,
-        );
-        if (!update) throw new Error("Could not find item.");
-        const existingData = item.metadata[INITIATIVE_METADATA_KEY];
-        const data = PartialInitiativeDataZod.parse({
-          ...(existingData ? existingData : {}),
-          ...update.data,
-        });
-        item.metadata[INITIATIVE_METADATA_KEY] = data;
-
-        return item;
-      });
-      return { ...state, items };
     }
   }
 }
