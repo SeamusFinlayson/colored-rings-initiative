@@ -7,6 +7,8 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "../../ui/popover";
+import { useContext } from "react";
+import { InitiativeStateContext } from "../../helpers/initiativeState/inititativeStateContext";
 
 export function RoundCounter({
   round,
@@ -15,10 +17,17 @@ export function RoundCounter({
   round: number;
   updateround: (round: number) => void;
 }) {
+  const playerRole = useContext(InitiativeStateContext).playerRole;
+
   return (
     <Popover>
       <PopoverTrigger
-        render={<Button className="min-w-20 px-0">{`Round ${round}`}</Button>}
+        render={
+          <Button
+            inert={playerRole === "PLAYER"}
+            className="min-w-20 px-0"
+          >{`Round ${round}`}</Button>
+        }
       />
       <PopoverContent className="overflow-y-auto">
         <PopoverHeader>
