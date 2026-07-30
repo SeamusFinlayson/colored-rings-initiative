@@ -1,6 +1,6 @@
 import OBR, { type Theme } from "@owlbear-rodeo/sdk";
 import { useEffect, useState } from "react";
-import { ThemeModeContext } from "./ThemeModeContext";
+import { ThemeModeContext } from "./themeModeContext";
 
 const setBodyTheme = (string: string) => {
   if (string === "DARK") document.body.classList.add("dark", "scheme-dark");

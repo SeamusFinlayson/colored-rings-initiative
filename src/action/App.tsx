@@ -1,8 +1,6 @@
 import { MainView } from "./components/mainView/MainView";
-import { useAppState } from "./helpers/useAppState";
-import { getSelectedGroup } from "./helpers/getSelectedGroup";
 import { SingleGroupView } from "./components/singleGroupView/SingleGroupView";
-import { useSceneMetadata } from "./helpers/useSceneMetadata";
+import { useSceneMetadata } from "./helpers/sceneData/useSceneMetadata";
 import { getPluginId } from "../getPluginId";
 import { PartialSceneDataZod, type SceneData } from "./types/SceneData";
 import { useCallback, useContext, useEffect } from "react";
@@ -10,19 +8,13 @@ import {
   broadcastRoundChangeEventMessage,
   handleSetRoundNumberMessage,
 } from "./helpers/broadcastRoundImplementation";
-import { defaultSceneData } from "./helpers/sceneData";
-import { RoomDataContext } from "./helpers/roomDataContext";
+import { defaultSceneData } from "./helpers/sceneData/defaultSceneData";
+import { RoomDataContext } from "./helpers/roomData/roomDataContext";
+import { getSelectedGroup } from "./helpers/getSelectedGroup";
+import { InitiativeStateContext } from "./helpers/initiativeState/inititativeStateContext";
 
 export function App() {
   const settings = useContext(RoomDataContext);
-
-  const [appState, setAppState] = useAppState();
-  const catagories = appState.catagories;
-  const tokenGroups = appState.tokenGroups;
-  const groupSelector = appState.groupSelector;
-  const selectedItems = appState.selectedItems;
-
-  const selectedGroup = getSelectedGroup(tokenGroups, groupSelector);
 
   const sceneData = useSceneMetadata(
     getPluginId("Initiative"),
@@ -49,24 +41,19 @@ export function App() {
     handleSetRoundNumberMessage((data) => updateRound(data.roundNumber));
   }, [updateRound]);
 
+  const initiative = useContext(InitiativeStateContext);
+
+  const selectedGroup = getSelectedGroup(
+    initiative.tokenGroups,
+    initiative.groupSelector,
+  );
+
   return (
     <div className="text-black dark:bg-transparent dark:text-white">
       {selectedGroup ? (
-        <SingleGroupView
-          selectedItems={selectedItems}
-          tokenGroup={selectedGroup}
-          tokenGroups={tokenGroups}
-          catagories={catagories}
-          setAppState={setAppState}
-        />
+        <SingleGroupView tokenGroup={selectedGroup} />
       ) : (
-        <MainView
-          round={sceneData.value.round}
-          updateround={updateRound}
-          catagories={catagories}
-          tokenGroups={tokenGroups}
-          setAppState={setAppState}
-        />
+        <MainView round={sceneData.value.round} updateround={updateRound} />
       )}
     </div>
   );

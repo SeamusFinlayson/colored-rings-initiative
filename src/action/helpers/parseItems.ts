@@ -20,10 +20,11 @@ function getRings(items: Item[]) {
     });
 }
 
-function getTokens(items: Item[], rings: Shape[]) {
+function getTokens(items: Item[], rings: Shape[], playerRole: "PLAYER" | "GM") {
   return items
     .filter((item) => isImage(item))
     .filter((item) => item.layer === "CHARACTER" || item.layer === "MOUNT")
+    .filter((item) => item.visible || playerRole === "GM")
     .map((item) => ({ item, data: getInitiativeData(item) }))
     .filter(
       (val) =>
@@ -114,9 +115,9 @@ function getTokenGroups(catagories: string[], tokens: Token[]) {
   return tokenGroups;
 }
 
-export function parseItems(items: Item[]) {
+export function parseItems(items: Item[], playerRole: "PLAYER" | "GM") {
   const rings = getRings(items);
-  const tokens = getTokens(items, rings);
+  const tokens = getTokens(items, rings, playerRole);
   const catagories = getCatagories(tokens);
   const tokenGroups = getTokenGroups(catagories, tokens);
 

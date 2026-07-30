@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import type { Metadata } from "@owlbear-rodeo/sdk";
 import OBR from "@owlbear-rodeo/sdk";
-import { parseMetadata } from "./parseMetadata";
+import { parseMetadata } from "../parseMetadata";
 
 /**
  *

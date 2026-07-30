@@ -6,7 +6,6 @@ import TokenImage from "./components/TokenImage";
 import { IconToggle } from "./components/IconToggle";
 import { updateInitiaitiveData } from "../../helpers/initiativeData";
 import type { Token } from "../../types/Token";
-import { usePlayerSelection } from "../../helpers/usePlayerSelection";
 import { CheckIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
@@ -17,10 +16,11 @@ import {
 } from "../../helpers/colorCssHelpers";
 import type { TokenGroup } from "../../types/TokenGroup";
 import { useContext } from "react";
-import { ThemeModeContext } from "../../helpers/ThemeModeContext";
-import { RoomDataContext } from "../../helpers/roomDataContext";
+import { ThemeModeContext } from "../../helpers/themeModeContext";
+import { RoomDataContext } from "../../helpers/roomData/roomDataContext";
 import { getTokenMargin } from "./getTokenMargin";
 import { processTurnUpdates } from "../../helpers/processTurnUpdates";
+import { PlayerSelectionContext } from "../../helpers/playerSelection/playerSelectionContext";
 
 export function GroupCard({
   tokens,
@@ -41,7 +41,7 @@ export function GroupCard({
   selected?: boolean;
   mode?: "INITIATIVE" | "SELECTION";
 }) {
-  const playerSelection = usePlayerSelection();
+  const playerSelection = useContext(PlayerSelectionContext);
   const themeMode = useContext(ThemeModeContext);
   const settings = useContext(RoomDataContext);
 

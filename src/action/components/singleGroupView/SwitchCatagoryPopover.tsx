@@ -9,7 +9,7 @@ import {
 import { useContext, useState } from "react";
 import { Button } from "../../ui/button";
 import { getMutedSurface } from "../../helpers/colorCssHelpers";
-import { ThemeModeContext } from "../../helpers/ThemeModeContext";
+import { ThemeModeContext } from "../../helpers/themeModeContext";
 
 export function SwitchCatagoryPopover({
   color,

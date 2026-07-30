@@ -1,4 +1,4 @@
-import type { RoomData } from "../types/RoomData";
+import type { RoomData } from "../../types/RoomData";
 
 export const defaultRoomData: RoomData = {
   disableRoundBroadcasting: false,

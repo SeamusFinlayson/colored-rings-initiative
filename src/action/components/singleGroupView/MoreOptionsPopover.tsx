@@ -13,8 +13,8 @@ import type { TokenGroup } from "../../types/TokenGroup";
 import { useContext, useState } from "react";
 import { updateInitiaitiveData } from "../../helpers/initiativeData";
 import { getMutedSurface } from "../../helpers/colorCssHelpers";
-import { ThemeModeContext } from "../../helpers/ThemeModeContext";
-import { RoomDataContext } from "../../helpers/roomDataContext";
+import { ThemeModeContext } from "../../helpers/themeModeContext";
+import { RoomDataContext } from "../../helpers/roomData/roomDataContext";
 
 function Counter({
   value,
