@@ -87,7 +87,7 @@ export function SettingsPopover() {
               onClick={() => setRoomData({ ...roomData, hideReaction: false })}
             />
           </div>
-          <div className="mb-0.5">Indicator</div>
+          <div className="mb-0.5">Current Turn Indicator</div>
           <div className="flex gap-1">
             <Toggle
               text="None"
