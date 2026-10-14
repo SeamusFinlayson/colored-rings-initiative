@@ -3,7 +3,7 @@ import { isPlainObject } from "../../contextMenu/helpers";
 import { getPluginId } from "../../getPluginId";
 import type { Token } from "../types/Token";
 import type { TokenGroup } from "../types/TokenGroup";
-import { getInitiativeData } from "./initiativeData";
+import { getItemInitiativeData } from "./itemInitiativeData";
 import { colors } from "../../contextMenu/colors";
 
 function getRings(items: Item[]) {
@@ -25,7 +25,7 @@ function getTokens(items: Item[], rings: Shape[], playerRole: "PLAYER" | "GM") {
     .filter((item) => isImage(item))
     .filter((item) => item.layer === "CHARACTER" || item.layer === "MOUNT")
     .filter((item) => item.visible || playerRole === "GM")
-    .map((item) => ({ item, data: getInitiativeData(item) }))
+    .map((item) => ({ item, data: getItemInitiativeData(item) }))
     .filter(
       (val) =>
         rings.some((ring) => ring.attachedTo === val.item.id) ||

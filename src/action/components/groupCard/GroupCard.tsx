@@ -4,7 +4,7 @@ import { ReadyFilled } from "../../icons/ReadyFilled";
 import { ReadyOutline } from "../../icons/ReadyOutline";
 import TokenImage from "./components/TokenImage";
 import { IconToggle } from "./components/IconToggle";
-import { updateInitiaitiveData } from "../../helpers/initiativeData";
+import { updateItemInitiaitiveData } from "../../helpers/itemInitiativeData";
 import type { Token } from "../../types/Token";
 import { CheckIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "../../ui/button";
@@ -21,6 +21,12 @@ import { RoomDataContext } from "../../helpers/roomData/roomDataContext";
 import { getTokenMargin } from "./getTokenMargin";
 import { processTurnUpdates } from "../../helpers/processTurnUpdates";
 import { PlayerSelectionContext } from "../../helpers/playerSelection/playerSelectionContext";
+import {
+  InitiativeStateContext,
+  InitiativeStateDispatchContext,
+} from "../../helpers/initiativeState/inititativeStateContext";
+import type { Item } from "@owlbear-rodeo/sdk";
+import { updateActionInitiativeData } from "../../helpers/updateActionInitiativeData";
 
 export function GroupCard({
   tokens,
@@ -44,6 +50,11 @@ export function GroupCard({
   const playerSelection = useContext(PlayerSelectionContext);
   const themeMode = useContext(ThemeModeContext);
   const settings = useContext(RoomDataContext);
+  const items = useContext(InitiativeStateContext).items;
+  const updateInitiativeState = useContext(InitiativeStateDispatchContext);
+
+  const updateItems = (items: Item[]) =>
+    updateInitiativeState({ type: "handleItemsChange", items });
 
   const [reactions, reactionsMaximum, turns, turnsMaximum, active] = [
     tokens.reduce((accum, token) => accum + token.data.reactions, 0),
@@ -142,7 +153,7 @@ export function GroupCard({
           checked={hasReaction}
           onClick={() => {
             const token = tokens.find((token) => token.data.reactions > 0);
-            updateInitiaitiveData([
+            const updates = [
               ...(token
                 ? [
                     {
@@ -158,17 +169,21 @@ export function GroupCard({
                       reactions: hasReaction ? 0 : token.data.reactionsMaximum,
                     },
                   }))),
-            ]);
+            ];
+            updateItemInitiaitiveData(updates);
+            updateActionInitiativeData(updates, items, updateItems);
           }}
           onContextMenu={() => {
-            updateInitiaitiveData([
+            const updates = [
               ...tokens.map((token) => ({
                 itemId: token.item.id,
                 data: {
                   reactions: hasReaction ? 0 : token.data.reactionsMaximum,
                 },
               })),
-            ]);
+            ];
+            updateItemInitiaitiveData(updates);
+            updateActionInitiativeData(updates, items, updateItems);
           }}
           text={reactionText}
           checkedIcon={<ReactionFilled />}
@@ -207,7 +222,12 @@ export function GroupCard({
                   data: { active: false },
                 })),
             ];
-            processTurnUpdates(updates, settings.onMapTurnIndicator);
+            processTurnUpdates(
+              updates,
+              settings.onMapTurnIndicator,
+              items,
+              updateItems,
+            );
           }}
           onContextMenu={() => {
             const updates = [
@@ -226,7 +246,12 @@ export function GroupCard({
                   data: { active: false },
                 })),
             ];
-            processTurnUpdates(updates, settings.onMapTurnIndicator);
+            processTurnUpdates(
+              updates,
+              settings.onMapTurnIndicator,
+              items,
+              updateItems,
+            );
           }}
           text={turnText}
           checkedIcon={<ReadyFilled />}

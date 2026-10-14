@@ -11,7 +11,7 @@ import { Button } from "../../ui/button";
 import { removeFromInitiative } from "../../helpers/removeFromInitiative";
 import type { TokenGroup } from "../../types/TokenGroup";
 import { useContext, useState } from "react";
-import { updateInitiaitiveData } from "../../helpers/initiativeData";
+import { updateItemInitiaitiveData } from "../../helpers/itemInitiativeData";
 import { getMutedSurface } from "../../helpers/colorCssHelpers";
 import { ThemeModeContext } from "../../helpers/themeModeContext";
 import { RoomDataContext } from "../../helpers/roomData/roomDataContext";
@@ -95,7 +95,7 @@ export function MoreOptionsPopover({
                       size={"sm"}
                       variant={"transparent"}
                       onClick={() => {
-                        updateInitiaitiveData(
+                        updateItemInitiaitiveData(
                           tokenGroup.tokens
                             .filter((token) =>
                               selectedItems.includes(token.item.id),
@@ -137,7 +137,7 @@ export function MoreOptionsPopover({
                   size={"sm"}
                   variant={"transparent"}
                   onClick={() => {
-                    updateInitiaitiveData(
+                    updateItemInitiaitiveData(
                       tokenGroup.tokens
                         .filter((token) =>
                           selectedItems.includes(token.item.id),

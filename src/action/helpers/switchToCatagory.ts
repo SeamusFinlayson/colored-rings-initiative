@@ -1,7 +1,7 @@
-import { updateInitiaitiveData } from "./initiativeData";
+import { updateItemInitiaitiveData } from "./itemInitiativeData";
 
 export function switchToCatagory(catagory: string, itemIds: string[]) {
-  updateInitiaitiveData(
+  updateItemInitiaitiveData(
     itemIds.map((itemId) => ({ itemId, data: { catagory } })),
   );
 }

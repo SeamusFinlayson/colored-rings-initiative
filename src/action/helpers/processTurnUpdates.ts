@@ -1,8 +1,9 @@
-import OBR from "@owlbear-rodeo/sdk";
-import { updateInitiaitiveData } from "./initiativeData";
+import OBR, { type Item } from "@owlbear-rodeo/sdk";
+import { updateItemInitiaitiveData } from "./itemInitiativeData";
 import { updateLabels } from "./labelItems";
 import type { PartialInitiativeData } from "../types/InitiativeData";
 import type { Token } from "../types/Token";
+import { updateActionInitiativeData } from "./updateActionInitiativeData";
 
 export function processTurnUpdates(
   updates: {
@@ -10,13 +11,16 @@ export function processTurnUpdates(
     data: PartialInitiativeData;
   }[],
   onMapTurnIndicator: "NONE" | "SELECT" | "LABEL",
+  items: Item[],
+  updateItems: (items: Item[]) => void,
 ) {
-  updateInitiaitiveData(
-    updates.map((val) => ({
-      itemId: val.token.item.id,
-      data: val.data,
-    })),
-  );
+  const simpleUpdates = updates.map((val) => ({
+    itemId: val.token.item.id,
+    data: val.data,
+  }));
+  updateItemInitiaitiveData(simpleUpdates);
+  updateActionInitiativeData(simpleUpdates, items, updateItems);
+
   if (onMapTurnIndicator === "LABEL") {
     updateLabels(
       updates.map((val) => ({

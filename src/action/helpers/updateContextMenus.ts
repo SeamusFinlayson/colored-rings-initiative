@@ -2,7 +2,7 @@ import OBR, { type Item, isImage, type KeyFilter } from "@owlbear-rodeo/sdk";
 import { getPluginId } from "../../getPluginId";
 import { listPlus, listX } from "../assets/iconAssets";
 import type { TokenGroup } from "../types/TokenGroup";
-import { updateInitiaitiveData } from "./initiativeData";
+import { updateItemInitiaitiveData } from "./itemInitiativeData";
 import { removeFromInitiative } from "./removeFromInitiative";
 import { setDifference } from "./setDifference";
 
@@ -38,7 +38,7 @@ export function updateContextMenus(tokenGroups: TokenGroup[], items: Item[]) {
       },
     ],
     onClick: (context) =>
-      updateInitiaitiveData(
+      updateItemInitiaitiveData(
         context.items.map((item) => ({
           itemId: item.id,
           data: {

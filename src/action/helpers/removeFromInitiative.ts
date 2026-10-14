@@ -1,6 +1,6 @@
 import OBR from "@owlbear-rodeo/sdk";
 import type { Token } from "../types/Token";
-import { INITIATIVE_METADATA_KEY } from "./initiativeData";
+import { INITIATIVE_METADATA_KEY } from "./itemInitiativeData";
 
 export function removeFromInitiative(tokens: Token[]) {
   const ringIds = tokens.flatMap((token) => token.rings.map((ring) => ring.id));

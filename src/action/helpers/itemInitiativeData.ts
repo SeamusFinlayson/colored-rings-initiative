@@ -19,14 +19,14 @@ const defaultInitiativeData: InitiativeData = {
 
 export const INITIATIVE_METADATA_KEY = getPluginId("initiative");
 
-export function getInitiativeData(item: Item): InitiativeData {
+export function getItemInitiativeData(item: Item): InitiativeData {
   const data = item.metadata[INITIATIVE_METADATA_KEY];
   const parseResult = PartialInitiativeDataZod.safeParse(data);
   if (!parseResult.success) return defaultInitiativeData;
   return { ...defaultInitiativeData, ...parseResult.data };
 }
 
-export function updateInitiaitiveData(
+export function updateItemInitiaitiveData(
   updates: { itemId: string; data: PartialInitiativeData }[],
 ) {
   const itemIds = updates.map((update) => update.itemId);

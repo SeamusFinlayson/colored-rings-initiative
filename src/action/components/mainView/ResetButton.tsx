@@ -1,17 +1,23 @@
 import { RefreshCcwIcon } from "lucide-react";
-import { updateInitiaitiveData } from "../../helpers/initiativeData";
+import { updateItemInitiaitiveData } from "../../helpers/itemInitiativeData";
 import { Button } from "../../ui/button";
 import type { TokenGroup } from "../../types/TokenGroup";
 import { clearActiveLabels } from "../../helpers/labelItems";
+import { updateActionInitiativeData } from "../../helpers/updateActionInitiativeData";
+import type { Item } from "@owlbear-rodeo/sdk";
 
 export function ResetButton({
   tokenGroups,
   round,
   updateround,
+  items,
+  updateItems,
 }: {
   tokenGroups: TokenGroup[];
   round: number;
   updateround: (round: number) => void;
+  items: Item[];
+  updateItems: (items: Item[]) => void;
 }) {
   const turnsRemaining = tokenGroups
     .flatMap((tokenGroup) =>
@@ -35,16 +41,16 @@ export function ResetButton({
       variant={lastTurn ? "pink" : "ghost"}
       onClick={() => {
         const tokens = tokenGroups.flatMap((group) => group.tokens);
-        updateInitiaitiveData(
-          tokens.map((token) => ({
-            itemId: token.item.id,
-            data: {
-              reactions: token.data.reactionsMaximum,
-              turns: token.data.turnsMaximum,
-              active: false,
-            },
-          })),
-        );
+        const updates = tokens.map((token) => ({
+          itemId: token.item.id,
+          data: {
+            reactions: token.data.reactionsMaximum,
+            turns: token.data.turnsMaximum,
+            active: false,
+          },
+        }));
+        updateItemInitiaitiveData(updates);
+        updateActionInitiativeData(updates, items, updateItems);
         clearActiveLabels();
         if (lastTurn) updateround(round + 1);
       }}

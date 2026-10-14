@@ -1,4 +1,4 @@
-import OBR from "@owlbear-rodeo/sdk";
+import OBR, { type Item } from "@owlbear-rodeo/sdk";
 import HeightMatch from "../../helpers/HeightMatch";
 import { GroupCard } from "../groupCard/GroupCard";
 import { ScrollArea } from "../../ui/scrollArea";
@@ -21,8 +21,12 @@ export function MainView({
   const initiativeState = useContext(InitiativeStateContext);
   const initiativeStateDispatch = useContext(InitiativeStateDispatchContext);
 
+  const updateItems = (items: Item[]) =>
+    initiativeStateDispatch({ type: "handleItemsChange", items });
+
   const tokenGroups = initiativeState.tokenGroups;
   const catagories = initiativeState.catagories;
+  const items = initiativeState.items;
 
   return (
     <div className="flex h-screen flex-col">
@@ -35,6 +39,8 @@ export function MainView({
             tokenGroups={tokenGroups}
             round={round}
             updateround={updateround}
+            items={items}
+            updateItems={updateItems}
           />
         </div>
       </div>
